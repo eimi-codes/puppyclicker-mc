@@ -13,6 +13,14 @@ Every outgoing action requires deliberate player input.
 
 ## At a glance
 
+### Configure and bind
+
+| Masked API-key configuration | Accepted-friend picker |
+| --- | --- |
+| ![PuppyClicker settings with a masked stored API key and validation controls](img/api-config.png) | ![The corrected friend picker with clear title, status, binding notice, and friend buttons](img/SCR-PCMC-FriendSelect.png) |
+
+### Send and confirm
+
 | Bound clicker details | PuppyClicker activity confirmation |
 | --- | --- |
 | ![A bound Puppy Clicker in the Minecraft inventory with its friend, server-sync, and consent tooltip](img/SCR-PCMC-InventoryView.png) | ![The resulting click from Minecraft in PuppyClicker's activity log](img/SCR-receivedlog.png) |
