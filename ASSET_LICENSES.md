@@ -23,3 +23,10 @@ to the MIT licence and NeoForged copyright notice in
 The current clicker item model references Minecraft's built-in tripwire-hook
 texture at runtime. That texture is not included in this repository and is not
 licensed by this project.
+
+## Documentation screenshots
+
+Files in `img/` are documentation screenshots captured for this project. Some
+screenshots display Minecraft or PuppyClicker interface elements and artwork.
+Their inclusion documents the mod's behaviour and does not relicense the
+underlying game, application, or brand assets.

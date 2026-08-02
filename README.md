@@ -9,7 +9,18 @@ the hotbar.
 
 Every outgoing action requires deliberate player input.
 
-![PuppyClicker self-click success message above the Minecraft hotbar](img/first-screenshot-ingame.png)
+![A Puppy Clicker held in Minecraft with friend-click confirmation above the hotbar](img/SCR-PCMC-ClickConf.png)
+
+## At a glance
+
+| Bound clicker details | PuppyClicker activity confirmation |
+| --- | --- |
+| ![A bound Puppy Clicker in the Minecraft inventory with its friend, server-sync, and consent tooltip](img/SCR-PCMC-InventoryView.png) | ![The resulting click from Minecraft in PuppyClicker's activity log](img/SCR-receivedlog.png) |
+
+PuppyClicker can also display its own notification after receiving the outgoing
+Minecraft click:
+
+![A PuppyClicker notification for a click sent from Minecraft](img/SCR-receivednotification.png)
 
 ## Features
 
