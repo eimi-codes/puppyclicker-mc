@@ -1,0 +1,13 @@
+{
+  "itemGroup.puppyclicker": "Example Mod Tab",
+  "block.puppyclicker.example_block": "Example Block",
+  "item.puppyclicker.example_item": "Example Item",
+
+  "puppyclicker.configuration.title": "PuppyClicker Configs",
+  "puppyclicker.configuration.section.puppyclicker.common.toml": "PuppyClicker Configs",
+  "puppyclicker.configuration.section.puppyclicker.common.toml.title": "PuppyClicker Configs",
+  "puppyclicker.configuration.items": "Item List",
+  "puppyclicker.configuration.logDirtBlock": "Log Dirt Block",
+  "puppyclicker.configuration.magicNumberIntroduction": "Magic Number Text",
+  "puppyclicker.configuration.magicNumber": "Magic Number"
+}

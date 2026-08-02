@@ -1,0 +1,93 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "type": "java",
+      "request": "launch",
+      "name": "Client",
+      "presentation": {
+        "group": "Mod Development - puppyclicker-mc",
+        "order": 0
+      },
+      "projectName": "puppyclicker-mc",
+      "mainClass": "net.neoforged.devlaunch.Main",
+      "args": [
+        "@/Users/eimi/Development/puppyclicker-mc/build/moddev/clientRunProgramArgs.txt"
+      ],
+      "vmArgs": [
+        "@/Users/eimi/Development/puppyclicker-mc/build/moddev/clientRunVmArgs.txt",
+        "-Dfml.modFolders\u003dpuppyclicker%%/Users/eimi/Development/puppyclicker-mc/bin/main"
+      ],
+      "cwd": "${workspaceFolder}/run",
+      "env": {},
+      "console": "internalConsole",
+      "shortenCommandLine": "none"
+    },
+    {
+      "type": "java",
+      "request": "launch",
+      "name": "Data",
+      "presentation": {
+        "group": "Mod Development - puppyclicker-mc",
+        "order": 1
+      },
+      "projectName": "puppyclicker-mc",
+      "mainClass": "net.neoforged.devlaunch.Main",
+      "args": [
+        "@/Users/eimi/Development/puppyclicker-mc/build/moddev/dataRunProgramArgs.txt"
+      ],
+      "vmArgs": [
+        "@/Users/eimi/Development/puppyclicker-mc/build/moddev/dataRunVmArgs.txt",
+        "-Dfml.modFolders\u003dpuppyclicker%%/Users/eimi/Development/puppyclicker-mc/bin/main"
+      ],
+      "cwd": "${workspaceFolder}/run",
+      "env": {},
+      "console": "internalConsole",
+      "shortenCommandLine": "none"
+    },
+    {
+      "type": "java",
+      "request": "launch",
+      "name": "GameTestServer",
+      "presentation": {
+        "group": "Mod Development - puppyclicker-mc",
+        "order": 2
+      },
+      "projectName": "puppyclicker-mc",
+      "mainClass": "net.neoforged.devlaunch.Main",
+      "args": [
+        "@/Users/eimi/Development/puppyclicker-mc/build/moddev/gameTestServerRunProgramArgs.txt"
+      ],
+      "vmArgs": [
+        "@/Users/eimi/Development/puppyclicker-mc/build/moddev/gameTestServerRunVmArgs.txt",
+        "-Dfml.modFolders\u003dpuppyclicker%%/Users/eimi/Development/puppyclicker-mc/bin/main"
+      ],
+      "cwd": "${workspaceFolder}/run",
+      "env": {},
+      "console": "internalConsole",
+      "shortenCommandLine": "none"
+    },
+    {
+      "type": "java",
+      "request": "launch",
+      "name": "Server",
+      "presentation": {
+        "group": "Mod Development - puppyclicker-mc",
+        "order": 3
+      },
+      "projectName": "puppyclicker-mc",
+      "mainClass": "net.neoforged.devlaunch.Main",
+      "args": [
+        "@/Users/eimi/Development/puppyclicker-mc/build/moddev/serverRunProgramArgs.txt"
+      ],
+      "vmArgs": [
+        "@/Users/eimi/Development/puppyclicker-mc/build/moddev/serverRunVmArgs.txt",
+        "-Dfml.modFolders\u003dpuppyclicker%%/Users/eimi/Development/puppyclicker-mc/bin/main"
+      ],
+      "cwd": "${workspaceFolder}/run",
+      "env": {},
+      "console": "internalConsole",
+      "shortenCommandLine": "none"
+    }
+  ]
+}
