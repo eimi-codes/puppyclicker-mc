@@ -226,7 +226,9 @@ public final class PuppyClickerConfigScreen extends Screen {
 
     @Override
     public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
-        this.renderBackground(graphics, mouseX, mouseY, partialTick);
+        // Screen.render owns the background pass. Render it and the widgets first so the
+        // background blur cannot be applied over labels drawn by this screen.
+        super.render(graphics, mouseX, mouseY, partialTick);
         int contentWidth = Math.min(CONTENT_WIDTH, this.width - 32);
         int left = (this.width - contentWidth) / 2;
         graphics.drawCenteredString(this.font, this.title, this.width / 2, 28, 0xFFFFFF);
@@ -243,7 +245,6 @@ public final class PuppyClickerConfigScreen extends Screen {
                         Component.translatable("screen.puppyclicker.config.privacy"),
                         contentWidth)
                 .renderCentered(graphics, this.width / 2, 184, 9, 0x808080);
-        super.render(graphics, mouseX, mouseY, partialTick);
     }
 
     @Override

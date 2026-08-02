@@ -184,7 +184,9 @@ public final class FriendPickerScreen extends Screen {
 
     @Override
     public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
-        this.renderBackground(graphics, mouseX, mouseY, partialTick);
+        // Screen.render draws the blurred background and widgets. Draw static copy afterwards;
+        // otherwise a second background pass blurs this text while leaving buttons sharp.
+        super.render(graphics, mouseX, mouseY, partialTick);
         graphics.drawCenteredString(this.font, this.title, this.width / 2, 16, 0xFFFFFF);
         graphics.drawCenteredString(this.font, this.status, this.width / 2, 34, 0xB0B0B0);
         int contentWidth = Math.min(360, this.width - 32);
@@ -193,7 +195,6 @@ public final class FriendPickerScreen extends Screen {
                         Component.translatable("screen.puppyclicker.friends.binding_notice"),
                         contentWidth)
                 .renderCentered(graphics, this.width / 2, this.height - 79, 9, 0x808080);
-        super.render(graphics, mouseX, mouseY, partialTick);
     }
 
     @Override
