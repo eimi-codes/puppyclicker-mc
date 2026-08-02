@@ -2,3 +2,6 @@
 /build/
 /run/
 /runs/
+.DS_Store
+/.idea/
+*.iml

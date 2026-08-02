@@ -4,6 +4,20 @@ Thank you for helping improve PuppyClicker for Minecraft. The project targets
 Minecraft 1.21.1, NeoForge 21.1.243 or newer within the 21.1.x line, and
 Java 21. Later Minecraft versions require separate ports and release artifacts.
 
+Technical experience is not required to help. Bug reports, setup feedback,
+accessibility observations, documentation fixes, and focused feature ideas are
+all useful contributions.
+
+## Contents
+
+- [Project principles](#project-principles)
+- [Before contributing](#before-contributing)
+- [Development setup](#development-setup)
+- [Building and verification](#building-and-verification)
+- [Code and documentation](#code-and-documentation)
+- [Publishing a GitHub release](#publishing-a-github-release)
+- [Licence and assets](#licence-and-assets)
+
 ## Project principles
 
 - Outgoing PuppyClicker actions must require deliberate player input.
@@ -17,6 +31,18 @@ Java 21. Later Minecraft versions require separate ports and release artifacts.
 - Network work must remain asynchronous. Return to the Minecraft client thread
   before changing screens, HUD messages, or other client state.
 - Preserve accessible status feedback and avoid narrating masked credentials.
+
+## Before contributing
+
+- Use the [guided issue forms](https://github.com/eimi-codes/puppyclicker-mc/issues/new/choose)
+  for bugs, setup help, and feature ideas.
+- Read [SUPPORT.md](SUPPORT.md) before posting logs or screenshots.
+- Report security concerns privately as described in [SECURITY.md](SECURITY.md).
+- Follow the project [Code of Conduct](CODE_OF_CONDUCT.md).
+
+Never include a PuppyClicker API key, access token, credential-bearing config
+file, or another person's private information in an issue, commit, or pull
+request. If a key has been exposed, replace it through PuppyClicker immediately.
 
 ## Development setup
 
@@ -105,4 +131,6 @@ before the workflow attempts to create a release.
 Contributions to the mod's source code and documentation are accepted under the
 [MIT License](LICENSE). Do not contribute branding or other assets unless their
 origin and reuse permission can be documented in
-[ASSET_LICENSES.md](ASSET_LICENSES.md).
+[ASSET_LICENSES.md](ASSET_LICENSES.md). Contributions to the adapted
+[Code of Conduct](CODE_OF_CONDUCT.md#attribution) are covered by its stated
+CC BY-SA 4.0 terms.

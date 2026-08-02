@@ -11,6 +11,28 @@ Every outgoing action requires deliberate player input.
 
 ![A Puppy Clicker held in Minecraft with friend-click confirmation above the hotbar](img/SCR-PCMC-ClickConf.png)
 
+## Contents
+
+- [Screenshots and quick tour](#at-a-glance)
+- [Features](#features)
+- [Requirements](#requirements)
+- [Setup and use](#setup-and-use)
+- [Privacy and informed consent](#privacy-and-informed-consent)
+- [Current scope and planned work](#current-scope-and-planned-work)
+- [Help and feedback](#help-and-feedback)
+- [Contributing](#contributing)
+- [Author and project](#author-and-project)
+- [License](#license)
+- [Links](#links)
+
+Repository documents:
+
+- [Support guide](SUPPORT.md)
+- [Contributor guide](CONTRIBUTING.md)
+- [Security policy](SECURITY.md)
+- [Code of Conduct](CODE_OF_CONDUCT.md)
+- [Asset and third-party notices](ASSET_LICENSES.md)
+
 ## At a glance
 
 ### Configure and bind
@@ -119,10 +141,23 @@ custom clicker texture.
 - Consider Fabric or multi-loader support only after the NeoForge release is
   stable.
 
+## Help and feedback
+
+You do not need to be a developer to report a problem or suggest an idea. The
+[guided issue forms](https://github.com/eimi-codes/puppyclicker-mc/issues/new/choose)
+explain what information is useful and include a form specifically for setup
+help. Please read the [support guide](SUPPORT.md) before sharing logs: never
+post an API key, access token, or `puppyclicker-client.toml` file.
+
+Security concerns and other matters that should not be public can be sent to
+[minecraftclicker@eim.ie](mailto:minecraftclicker@eim.ie). See the
+[security policy](SECURITY.md) for reporting guidance.
+
 ## Contributing
 
 Development setup, testing, credential-safety requirements, and the release
-process are documented in [CONTRIBUTING.md](CONTRIBUTING.md).
+process are documented in [CONTRIBUTING.md](CONTRIBUTING.md). Participation is
+covered by the project [Code of Conduct](CODE_OF_CONDUCT.md).
 
 ## Author and project
 
@@ -137,7 +172,9 @@ The mod's source code and documentation are available under the
 [MIT License](LICENSE). PuppyClicker artwork and branding are excluded from
 that software licence; see [the asset and third-party notices](ASSET_LICENSES.md)
 for details. The original NeoForge MDK template notice is retained in
-[`TEMPLATE_LICENSE.txt`](TEMPLATE_LICENSE.txt).
+[`TEMPLATE_LICENSE.txt`](TEMPLATE_LICENSE.txt). The adapted
+[Code of Conduct](CODE_OF_CONDUCT.md#attribution) carries its stated
+CC BY-SA 4.0 terms.
 
 ## Links
 

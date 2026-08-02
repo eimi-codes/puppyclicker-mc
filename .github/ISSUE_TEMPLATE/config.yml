@@ -1,0 +1,11 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Read the support guide
+    url: https://github.com/eimi-codes/puppyclicker-mc/blob/main/SUPPORT.md
+    about: Find the right form and learn how to share logs without exposing credentials.
+  - name: Report a security problem privately
+    url: https://github.com/eimi-codes/puppyclicker-mc/security/policy
+    about: Do not disclose vulnerabilities or API keys in a public issue.
+  - name: PuppyClicker service and account help
+    url: https://puppyclicker.app/
+    about: Use PuppyClicker for account or service problems that are not caused by this mod.

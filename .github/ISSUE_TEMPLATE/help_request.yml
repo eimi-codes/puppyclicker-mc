@@ -1,0 +1,74 @@
+name: I need help using the mod
+description: Ask for help installing, configuring, or using PuppyClicker for Minecraft.
+title: "[Help]: "
+labels:
+  - question
+body:
+  - type: markdown
+    attributes:
+      value: |
+        It is okay not to know the technical terms. Tell us what you are trying to do and where you became stuck.
+
+        This is a public form. **Never share an API key, access token, or the contents of `puppyclicker-client.toml`.** Account and service problems unrelated to the mod belong with [PuppyClicker](https://puppyclicker.app/).
+
+  - type: dropdown
+    id: goal
+    attributes:
+      label: What are you trying to do?
+      options:
+        - Install the mod
+        - Open the configuration screen
+        - Add or validate an API key
+        - Configure the self-click keybind
+        - Craft a Puppy Clicker
+        - Bind a clicker to a friend or pet
+        - Send a click
+        - Use the mod on a multiplayer server
+        - Something else
+    validations:
+      required: true
+
+  - type: textarea
+    id: stuck
+    attributes:
+      label: Where are you stuck?
+      description: Describe what you tried and what you can currently see.
+    validations:
+      required: true
+
+  - type: textarea
+    id: message
+    attributes:
+      label: What message does Minecraft show?
+      description: Copy the on-screen message if there is one, but remove credentials and private information.
+
+  - type: input
+    id: versions
+    attributes:
+      label: Versions you know
+      description: Include the mod, Minecraft, NeoForge, Java, and launcher versions if you can find them.
+      placeholder: Mod 1.0.0; Minecraft 1.21.1; NeoForge 21.1.243; Java 21
+
+  - type: textarea
+    id: tried
+    attributes:
+      label: What have you already tried?
+      description: This prevents people from suggesting steps you have already completed.
+
+  - type: textarea
+    id: context
+    attributes:
+      label: Screenshots or other context
+      description: Check every image and log for API keys, access tokens, usernames, and private information before attaching it.
+
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Public-report checks
+      options:
+        - label: I have not included an API key, access token, or credential-bearing configuration file.
+          required: true
+        - label: I understand that this help request and its attachments will be public.
+          required: true
+        - label: I agree to follow the project [Code of Conduct](https://github.com/eimi-codes/puppyclicker-mc/blob/main/CODE_OF_CONDUCT.md).
+          required: true

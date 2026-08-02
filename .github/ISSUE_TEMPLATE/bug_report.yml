@@ -1,0 +1,121 @@
+name: Something is not working
+description: Tell us about a problem with the Minecraft mod. No technical expertise required.
+title: "[Bug]: "
+labels:
+  - bug
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thank you for reporting a problem. Plain-language descriptions are welcome.
+
+        **Never paste an API key, access token, or `puppyclicker-client.toml` file.** Review logs and screenshots for private information before attaching them.
+
+  - type: dropdown
+    id: area
+    attributes:
+      label: Which part is affected?
+      options:
+        - Installing or starting Minecraft
+        - Mods configuration screen or API-key validation
+        - Self-click keybind
+        - Crafting or using a Puppy Clicker item
+        - Friend list or binding a clicker
+        - Sending a click
+        - Multiplayer or dedicated server
+        - Messages, accessibility, or visual layout
+        - Something else or I am not sure
+    validations:
+      required: true
+
+  - type: textarea
+    id: happened
+    attributes:
+      label: What happened?
+      description: Describe what you saw, including the exact on-screen message if there was one.
+      placeholder: I tried to... I expected... Instead...
+    validations:
+      required: true
+
+  - type: textarea
+    id: steps
+    attributes:
+      label: How can we make it happen again?
+      description: A short numbered list is ideal. It is okay if the problem is intermittent.
+      placeholder: |
+        1. Start Minecraft...
+        2. Open...
+        3. Use...
+    validations:
+      required: true
+
+  - type: input
+    id: mod_version
+    attributes:
+      label: PuppyClicker mod version
+      description: This appears beside the mod in the Mods screen or in the JAR filename.
+      placeholder: 1.0.0
+    validations:
+      required: true
+
+  - type: input
+    id: minecraft_version
+    attributes:
+      label: Minecraft version
+      placeholder: 1.21.1
+    validations:
+      required: true
+
+  - type: input
+    id: neoforge_version
+    attributes:
+      label: NeoForge version
+      description: If you cannot find this, say “not sure”.
+      placeholder: 21.1.243
+    validations:
+      required: true
+
+  - type: dropdown
+    id: environment
+    attributes:
+      label: Where did this happen?
+      options:
+        - Singleplayer
+        - Multiplayer server I administer
+        - Multiplayer server administered by someone else
+        - Before reaching the main menu
+        - Somewhere else or I am not sure
+    validations:
+      required: true
+
+  - type: input
+    id: system
+    attributes:
+      label: Launcher, operating system, and Java version
+      description: Share whatever you know. Do not include account names or tokens.
+      placeholder: Prism Launcher 11, macOS, Java 21
+
+  - type: textarea
+    id: logs
+    attributes:
+      label: Relevant log excerpt
+      description: Remove API keys, access tokens, usernames, file paths, and other private information first. A short relevant excerpt is preferable to an unreviewed full log.
+      render: text
+
+  - type: textarea
+    id: screenshots
+    attributes:
+      label: Screenshots or additional context
+      description: You may drag images here after checking them for credentials and private information.
+
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Public-report checks
+      options:
+        - label: I checked this report, its logs, and its images for API keys, access tokens, and private information.
+          required: true
+        - label: I understand that this issue and everything attached to it will be public.
+          required: true
+        - label: I agree to follow the project [Code of Conduct](https://github.com/eimi-codes/puppyclicker-mc/blob/main/CODE_OF_CONDUCT.md).
+          required: true

@@ -1,0 +1,71 @@
+name: Suggest an improvement
+description: Propose a feature, accessibility improvement, or documentation change.
+title: "[Idea]: "
+labels:
+  - enhancement
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for helping shape the mod. Describe the outcome you want in everyday language; implementation details are optional.
+
+        PuppyClicker actions must remain deliberate and consent-based. Automatic actions triggered by damage, death, combat, or similar gameplay events are outside this project's scope.
+
+        This is a public form. Do not include API keys, access tokens, or private information.
+
+  - type: dropdown
+    id: area
+    attributes:
+      label: What would this improve?
+      options:
+        - Self-click keybind
+        - Clicker item or crafting
+        - Friend selection or binding
+        - Configuration and API-key setup
+        - Feedback, accessibility, sounds, or visuals
+        - Privacy, safety, or informed consent
+        - Documentation or translations
+        - Compatibility or installation
+        - Something else
+    validations:
+      required: true
+
+  - type: textarea
+    id: idea
+    attributes:
+      label: What would you like to happen?
+      description: Explain the experience from the player's point of view.
+    validations:
+      required: true
+
+  - type: textarea
+    id: benefit
+    attributes:
+      label: Who would this help, and why?
+      description: Accessibility and non-technical use cases are especially welcome.
+    validations:
+      required: true
+
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Is there another way to solve the same problem?
+      description: Optional. Include workarounds or simpler versions of the idea if any come to mind.
+
+  - type: textarea
+    id: consent
+    attributes:
+      label: Privacy, consent, or accessibility considerations
+      description: Optional. Tell us about any information-sharing, narration, colour, sound, motor, cognitive, or safety considerations.
+
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Before submitting
+      options:
+        - label: I searched existing issues for a similar suggestion.
+          required: true
+        - label: I understand that outgoing PuppyClicker actions must require deliberate player input.
+          required: true
+        - label: I agree to follow the project [Code of Conduct](https://github.com/eimi-codes/puppyclicker-mc/blob/main/CODE_OF_CONDUCT.md).
+          required: true
