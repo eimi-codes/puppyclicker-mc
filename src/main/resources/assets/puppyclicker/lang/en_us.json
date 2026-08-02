@@ -1,13 +1,18 @@
 {
-  "itemGroup.puppyclicker": "Example Mod Tab",
-  "block.puppyclicker.example_block": "Example Block",
-  "item.puppyclicker.example_item": "Example Item",
-
-  "puppyclicker.configuration.title": "PuppyClicker Configs",
-  "puppyclicker.configuration.section.puppyclicker.common.toml": "PuppyClicker Configs",
-  "puppyclicker.configuration.section.puppyclicker.common.toml.title": "PuppyClicker Configs",
-  "puppyclicker.configuration.items": "Item List",
-  "puppyclicker.configuration.logDirtBlock": "Log Dirt Block",
-  "puppyclicker.configuration.magicNumberIntroduction": "Magic Number Text",
-  "puppyclicker.configuration.magicNumber": "Magic Number"
+  "key.categories.puppyclicker": "PuppyClicker",
+  "key.puppyclicker.send_self_click": "Send a self-click",
+  "message.puppyclicker.click_sent": "PuppyClicker: click sent! 🐾",
+  "message.puppyclicker.http_error": "PuppyClicker: request failed (HTTP %s)",
+  "message.puppyclicker.invalid_api_key_format": "PuppyClicker: API key must start with pak_",
+  "message.puppyclicker.missing_api_key": "PuppyClicker: add your API key to puppyclicker-client.toml",
+  "message.puppyclicker.network_error": "PuppyClicker: network request failed",
+  "message.puppyclicker.network_unavailable": "PuppyClicker: network unavailable",
+  "message.puppyclicker.rate_limited": "PuppyClicker: rate limited; try again later",
+  "message.puppyclicker.rate_limited_retry": "PuppyClicker: rate limited; retry in %s seconds",
+  "message.puppyclicker.request_in_flight": "PuppyClicker: a click is already being sent",
+  "message.puppyclicker.timeout": "PuppyClicker: request timed out",
+  "puppyclicker.configuration.apiKey": "API Key",
+  "puppyclicker.configuration.section.puppyclicker.client.toml": "PuppyClicker Client Settings",
+  "puppyclicker.configuration.section.puppyclicker.client.toml.title": "PuppyClicker Client Settings",
+  "puppyclicker.configuration.title": "PuppyClicker Settings"
 }
