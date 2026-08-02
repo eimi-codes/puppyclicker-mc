@@ -181,6 +181,15 @@ tasks.withType(JavaCompile).configureEach {
     options.encoding = 'UTF-8' // Use the UTF-8 charset for Java compilation
 }
 
+tasks.named('processResources', ProcessResources).configure {
+    // Ship the applicable notices with the binary so they remain available
+    // when the JAR is downloaded from GitHub Releases or a mod platform.
+    from(layout.projectDirectory) {
+        include 'LICENSE', 'ASSET_LICENSES.md', 'TEMPLATE_LICENSE.txt'
+        into 'META-INF'
+    }
+}
+
 // IDEA no longer automatically downloads sources/javadoc jars for dependencies, so we need to explicitly enable the behavior.
 idea {
     module {
