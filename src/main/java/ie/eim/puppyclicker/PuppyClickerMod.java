@@ -1,28 +1,34 @@
 package ie.eim.puppyclicker;
 
-import ie.eim.puppyclicker.client.ClientEvents;
-import ie.eim.puppyclicker.config.PuppyClickerConfig;
-import net.neoforged.api.distmarker.Dist;
+import ie.eim.puppyclicker.component.ModDataComponents;
+import ie.eim.puppyclicker.item.ModItems;
+import ie.eim.puppyclicker.network.ModNetworking;
+import net.minecraft.world.item.CreativeModeTabs;
 import net.neoforged.bus.api.IEventBus;
-import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.common.Mod;
-import net.neoforged.fml.config.ModConfig;
-import net.neoforged.neoforge.client.gui.ConfigurationScreen;
-import net.neoforged.neoforge.client.gui.IConfigScreenFactory;
-import net.neoforged.neoforge.common.NeoForge;
+import net.neoforged.neoforge.event.BuildCreativeModeTabContentsEvent;
 
-@Mod(value = PuppyClickerMod.MOD_ID, dist = Dist.CLIENT)
+/**
+ * Common mod entry point, loaded on both physical clients and dedicated servers.
+ *
+ * <p>Client-only configuration, HTTP, and UI registration deliberately lives in
+ * {@link PuppyClickerClient} so a dedicated server never loads Minecraft client classes.</p>
+ */
+@Mod(PuppyClickerMod.MOD_ID)
 public final class PuppyClickerMod {
     public static final String MOD_ID = "puppyclicker";
 
-    public PuppyClickerMod(IEventBus modEventBus, ModContainer modContainer) {
-        modContainer.registerConfig(
-                ModConfig.Type.CLIENT,
-                PuppyClickerConfig.SPEC,
-                "puppyclicker-client.toml");
-        modContainer.registerExtensionPoint(IConfigScreenFactory.class, ConfigurationScreen::new);
+    public PuppyClickerMod(IEventBus modEventBus) {
+        // These registries define game-visible state and therefore must exist on both sides.
+        ModDataComponents.COMPONENTS.register(modEventBus);
+        ModItems.ITEMS.register(modEventBus);
+        modEventBus.addListener(ModNetworking::register);
+        modEventBus.addListener(PuppyClickerMod::addCreativeTabContents);
+    }
 
-        modEventBus.addListener(ClientEvents::registerKeyMappings);
-        NeoForge.EVENT_BUS.addListener(ClientEvents::onClientTick);
+    private static void addCreativeTabContents(BuildCreativeModeTabContentsEvent event) {
+        if (event.getTabKey() == CreativeModeTabs.TOOLS_AND_UTILITIES) {
+            event.accept(ModItems.CLICKER);
+        }
     }
 }
