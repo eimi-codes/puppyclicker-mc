@@ -1,7 +1,8 @@
 # Contributing to PuppyClicker for Minecraft
 
 Thank you for helping improve PuppyClicker for Minecraft. The project targets
-Minecraft 1.21.1, NeoForge 21.1.243 or newer, and Java 21.
+Minecraft 1.21.1, NeoForge 21.1.243 or newer within the 21.1.x line, and
+Java 21. Later Minecraft versions require separate ports and release artifacts.
 
 ## Project principles
 

@@ -45,11 +45,15 @@ Minecraft click:
 
 ## Requirements
 
-- Minecraft 1.21.1
-- NeoForge 21.1.243 or newer
+- Minecraft 1.21.1 exactly
+- NeoForge 21.1.243 or newer within the 21.1.x release line
 - Java 21
 - A PuppyClicker account and personal API key beginning with `pak_`
 - The mod installed on both the Minecraft client and server
+
+This JAR is not compatible with Minecraft 1.21.2 or later. NeoForge's 21.1.x
+line targets Minecraft 1.21.1; later Minecraft releases require their own
+compiled and tested mod builds.
 
 The server installation is required for the custom clicker item and its
 synchronised per-stack binding data. The Minecraft server does not receive the
@@ -102,9 +106,9 @@ keypress or clicker-item interaction.
 
 ## Current scope and planned work
 
-This is an early NeoForge release focused on intentional outgoing clicks. It
-does not yet include incoming-click streaming, recent-click history, or a
-finished custom clicker texture.
+The stable 1.0 release is focused on intentional outgoing clicks. It does not
+yet include incoming-click streaming, recent-click history, or a finished
+custom clicker texture.
 
 - Connect to `GET /stream` with bearer-header SSE authentication.
 - Add accessible incoming-click HUD notifications, sounds, and optional paw
@@ -120,6 +124,13 @@ finished custom clicker texture.
 Development setup, testing, credential-safety requirements, and the release
 process are documented in [CONTRIBUTING.md](CONTRIBUTING.md).
 
+## Author and project
+
+PuppyClicker for Minecraft is created and maintained by
+[Éimí Mhic an Ridire](https://eim.ie/). It is an independent Minecraft client
+for [PuppyClicker](https://puppyclicker.app/); PuppyClicker supplies the service,
+API, name, and branded icon used by the mod.
+
 ## License
 
 The mod's source code and documentation are available under the
@@ -130,8 +141,9 @@ for details. The original NeoForge MDK template notice is retained in
 
 ## Links
 
+- [Author — Éimí Mhic an Ridire](https://eim.ie/)
 - [PuppyClicker](https://puppyclicker.app/)
 - [PuppyClicker API documentation](https://puppyclicker.app/docs/api/v2/)
-- [Modrinth project](https://modrinth.com/project/puppyclicker)
+- [Modrinth project](https://modrinth.com/project/puppyclicker/)
 - [GitHub repository](https://github.com/eimi-codes/puppyclicker-mc)
 - [GitHub releases](https://github.com/eimi-codes/puppyclicker-mc/releases/)

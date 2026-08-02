@@ -15,7 +15,7 @@ loaderVersion="${loader_version_range}" #mandatory
 license="${mod_license}"
 
 # A URL to refer people to when problems occur with this mod
-#issueTrackerURL="https://change.me.to.your.issue.tracker.example.invalid/" #optional
+issueTrackerURL="https://github.com/eimi-codes/puppyclicker-mc/issues" #optional
 
 # A list of mods - how many allowed here is determined by the individual mod loader
 [[mods]] #mandatory
@@ -39,10 +39,10 @@ displayURL="https://puppyclicker.app/" #optional
 logoFile="puppyclicker-icon.png" #optional
 
 # A text field displayed in the mod UI
-credits="PuppyClicker icon supplied by puppyclicker.app" #optional
+credits="PuppyClicker: https://puppyclicker.app/ — icon supplied by PuppyClicker" #optional
 
 # The authors of the mod, displayed in the mod UI (optional)
-authors="Éimí Mhic an Ridire"
+authors="Éimí Mhic an Ridire — https://eim.ie/"
 
 # The description text for the mod (multi line!) (#mandatory)
 description='''
@@ -72,7 +72,7 @@ Requires the mod on both the client and server; API credentials remain client-on
     # Optional field describing why the dependency is required or why it is incompatible
     # reason="..."
     # The version range of the dependency
-    versionRange="[${neo_version},)" #mandatory
+    versionRange="${neo_version_range}" #mandatory
     # An ordering relationship for the dependency.
     # BEFORE - This mod is loaded BEFORE the dependency
     # AFTER - This mod is loaded AFTER the dependency
@@ -84,7 +84,7 @@ Requires the mod on both the client and server; API credentials remain client-on
 [[dependencies.${mod_id}]]
     modId="minecraft"
     type="required"
-    # This version range declares a minimum of the current minecraft version up to but not including the next major version
+    # This release is compiled and tested specifically for Minecraft 1.21.1.
     versionRange="${minecraft_version_range}"
     ordering="NONE"
     side="BOTH"
