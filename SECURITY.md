@@ -19,7 +19,7 @@ the subject **PuppyClicker Minecraft security report**.
 Include as much of the following as is safe:
 
 - A concise description of the problem and its potential impact.
-- The mod, Minecraft, NeoForge, Java, launcher, and operating-system versions.
+- The mod, Minecraft, loader, Java, launcher, and operating-system versions.
 - Reproduction steps or a small proof of concept.
 - Whether the issue affects the client, dedicated server, or both.
 - Any suggested mitigation.

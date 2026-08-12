@@ -1,0 +1,36 @@
+plugins {
+    id 'java-library'
+}
+
+group = rootProject.mod_group_id
+version = rootProject.mod_version
+
+repositories {
+    mavenCentral()
+}
+
+java {
+    // Java 17 is the shared floor for the maintained pack-era adapters (1.18.2+).
+    // Newer Minecraft versions can consume these classes without a second HTTP client.
+    sourceCompatibility = JavaVersion.VERSION_17
+    targetCompatibility = JavaVersion.VERSION_17
+}
+
+dependencies {
+    // Minecraft supplies Gson at runtime. Keeping it compile-only avoids bundling a
+    // second copy into loader artifacts while leaving the HTTP client loader-neutral.
+    compileOnly 'com.google.code.gson:gson:2.11.0'
+
+    testImplementation 'com.google.code.gson:gson:2.11.0'
+    testImplementation 'org.junit.jupiter:junit-jupiter:5.11.4'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+}
+
+tasks.named('test', Test).configure {
+    useJUnitPlatform()
+}
+
+tasks.withType(JavaCompile).configureEach {
+    options.encoding = 'UTF-8'
+    options.release = 17
+}

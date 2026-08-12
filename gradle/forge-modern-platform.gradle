@@ -1,0 +1,106 @@
+group = rootProject.mod_group_id
+version = rootProject.mod_version
+
+base {
+    archivesName = "${rootProject.mod_id}-forge-${minecraft_version}"
+}
+
+java.toolchain.languageVersion = JavaLanguageVersion.of(java_version as int)
+
+// Forge's modern launcher scans one mod root. Keep compiled classes and
+// processed resources together, matching the current official Forge MDK.
+def mainOutputDirectory = layout.buildDirectory.dir('sourceSets/main')
+sourceSets.main.output.classesDirs.setFrom(mainOutputDirectory)
+sourceSets.main.output.resourcesDir = mainOutputDirectory.get().asFile
+
+sourceSets.main.resources {
+    srcDir rootProject.file('platforms/forge/common/src/main/resources')
+}
+
+minecraft {
+    if (minecraft_version != '26.1.2') {
+        mappings channel: 'official', version: minecraft_version
+    }
+
+    runs {
+        configureEach {
+            workingDir = layout.projectDirectory.dir('run')
+            systemProperty 'forge.enabledGameTestNamespaces', rootProject.mod_id
+        }
+
+        register('client')
+
+        register('server') {
+            args '--nogui'
+        }
+    }
+}
+
+repositories {
+    minecraft.mavenizer(it)
+    maven fg.forgeMaven
+    maven fg.minecraftLibsMaven
+    mavenCentral()
+}
+
+dependencies {
+    implementation minecraft.dependency("net.minecraftforge:forge:${minecraft_version}-${forge_version}")
+    implementation project(':common')
+}
+
+def generateModMetadata = tasks.register('generateModMetadata', ProcessResources) {
+    def replaceProperties = [
+            minecraft_version      : minecraft_version,
+            minecraft_version_range: minecraft_version_range,
+            forge_version_range    : forge_version_range,
+            loader_version_range   : loader_version_range,
+            mod_id                 : rootProject.mod_id,
+            mod_name               : rootProject.mod_name,
+            mod_license            : rootProject.mod_license,
+            mod_version            : rootProject.mod_version,
+    ]
+    inputs.properties replaceProperties
+    expand replaceProperties
+    from rootProject.file('platforms/forge/common/src/main/templates')
+    into layout.buildDirectory.dir('generated/modMetadata')
+}
+
+sourceSets.main.resources.srcDir generateModMetadata
+
+tasks.named('jar', Jar).configure {
+    from(project(':common').sourceSets.main.output)
+}
+
+tasks.named('processResources', ProcessResources).configure {
+    from(rootProject.layout.projectDirectory) {
+        include 'LICENSE', 'ASSET_LICENSES.md', 'TEMPLATE_LICENSE.txt'
+        into 'META-INF'
+    }
+}
+
+tasks.withType(JavaCompile).configureEach {
+    options.encoding = 'UTF-8'
+}
+
+tasks.named('compileJava', JavaCompile).configure {
+    destinationDirectory = mainOutputDirectory
+}
+
+tasks.named('processResources', ProcessResources).configure {
+    destinationDir = mainOutputDirectory.get().asFile
+}
+
+publishing {
+    publications {
+        register('mavenJava', MavenPublication) {
+            from components.java
+        }
+    }
+}
+
+idea {
+    module {
+        downloadSources = true
+        downloadJavadoc = true
+    }
+}

@@ -1,0 +1,17 @@
+plugins {
+    id 'java-library'
+    id 'maven-publish'
+    id 'net.minecraftforge.gradle'
+    id 'idea'
+}
+
+ext {
+    minecraft_version = '1.21.1'
+    minecraft_version_range = '[1.21.1]'
+    forge_version = '52.1.16'
+    forge_version_range = '[52.1.0,53)'
+    loader_version_range = '[24,)'
+    java_version = 21
+}
+
+apply from: rootProject.file('gradle/forge-modern-platform.gradle')

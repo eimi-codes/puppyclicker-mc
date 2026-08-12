@@ -1,0 +1,15 @@
+plugins {
+    id 'java-library'
+    id 'maven-publish'
+    id 'net.fabricmc.fabric-loom'
+    id 'idea'
+}
+
+ext {
+    minecraft_version = '26.1.2'
+    fabric_loader_version = '0.19.3'
+    fabric_api_version = '0.155.2+26.1.2'
+    java_version = 25
+}
+
+apply from: rootProject.file('gradle/fabric-platform.gradle')

@@ -9,7 +9,7 @@ body:
       value: |
         It is okay not to know the technical terms. Tell us what you are trying to do and where you became stuck.
 
-        This is a public form. **Never share an API key, access token, or the contents of `puppyclicker-client.toml`.** Account and service problems unrelated to the mod belong with [PuppyClicker](https://puppyclicker.app/).
+        This is a public form. **Never share an API key, access token, or the contents of `puppyclicker-client.toml` / `puppyclicker-client.json`.** Account and service problems unrelated to the mod belong with [PuppyClicker](https://puppyclicker.app/).
 
   - type: dropdown
     id: goal
@@ -23,6 +23,7 @@ body:
         - Craft a Puppy Clicker
         - Bind a clicker to a friend or pet
         - Send a click
+        - Configure automated actions
         - Use the mod on a multiplayer server
         - Something else
     validations:
@@ -46,8 +47,8 @@ body:
     id: versions
     attributes:
       label: Versions you know
-      description: Include the mod, Minecraft, NeoForge, Java, and launcher versions if you can find them.
-      placeholder: Mod 1.0.0; Minecraft 1.21.1; NeoForge 21.1.243; Java 21
+      description: Include the mod, Minecraft, loader, Java, and launcher versions if you can find them.
+      placeholder: Mod 1.1.0; Minecraft 1.19.2; Forge 43.5.2; Java 17
 
   - type: textarea
     id: tried

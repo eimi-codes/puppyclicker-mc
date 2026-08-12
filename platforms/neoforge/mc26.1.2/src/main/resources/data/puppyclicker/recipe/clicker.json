@@ -1,0 +1,13 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "tools",
+  "ingredients": [
+    "minecraft:stone_button",
+    "minecraft:iron_nugget",
+    "minecraft:redstone"
+  ],
+  "result": {
+    "count": 1,
+    "id": "puppyclicker:clicker"
+  }
+}

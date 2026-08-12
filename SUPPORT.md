@@ -1,7 +1,7 @@
 # Support
 
 Thank you for using PuppyClicker for Minecraft. You do not need to understand
-Java, NeoForge, or the PuppyClicker API to ask for help.
+Java, mod loaders, or the PuppyClicker API to ask for help.
 
 ## Choose the right place
 
@@ -18,9 +18,9 @@ Java, NeoForge, or the PuppyClicker API to ask for help.
 
 Please check the following if you can:
 
-- Minecraft is version 1.21.1.
-- NeoForge is 21.1.243 or a newer 21.1.x release.
-- Java is version 21.
+- The JAR filename contains your exact loader and Minecraft version.
+- Your loader, its API (for Fabric), and Java match the table in the
+  [README requirements](README.md#requirements).
 - The same PuppyClicker mod version is installed on the client and server.
 - The API key begins with `pak_` and validates in
   **Mods → PuppyClicker for Minecraft → Config**.
@@ -37,7 +37,7 @@ Useful information includes:
 - What you were trying to do.
 - What happened instead.
 - The exact message shown above the hotbar or on the configuration screen.
-- Minecraft, NeoForge, Java, mod, launcher, and operating-system versions.
+- Minecraft, loader, Java, mod, launcher, and operating-system versions.
 - Steps that make the problem happen again.
 - Screenshots that do not contain credentials or private information.
 - A log reviewed for secrets before upload.
@@ -46,7 +46,8 @@ Useful information includes:
 
 - A PuppyClicker API key, including any complete value beginning with `pak_`.
 - A Minecraft access token or launcher credential.
-- The contents of `config/puppyclicker-client.toml`.
+- The contents of `config/puppyclicker-client.toml` or
+  `config/puppyclicker-client.json`.
 - Private information belonging to you or another person.
 
 If a credential is exposed, remove it from the public post and replace or

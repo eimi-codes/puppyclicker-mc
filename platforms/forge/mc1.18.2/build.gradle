@@ -1,0 +1,17 @@
+plugins {
+    id 'java-library'
+    id 'maven-publish'
+    id 'net.neoforged.moddev.legacyforge'
+    id 'idea'
+}
+
+ext {
+    minecraft_version = '1.18.2'
+    minecraft_version_range = '[1.18.2]'
+    forge_version = '40.3.12'
+    forge_version_range = '[40.3.0,41)'
+    loader_version_range = '[40,)'
+    java_version = 17
+}
+
+apply from: rootProject.file('gradle/forge-legacy-platform.gradle')

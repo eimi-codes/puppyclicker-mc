@@ -1,0 +1,35 @@
+{
+  "schemaVersion": 1,
+  "id": "${mod_id}",
+  "version": "${mod_version}",
+  "name": "${mod_name}",
+  "description": "Connect Minecraft to PuppyClicker with manual clickers and explicitly enabled, self-targeted gameplay automations.",
+  "authors": [
+    "Éimí Mhic an Ridire"
+  ],
+  "contact": {
+    "homepage": "https://modrinth.com/project/puppyclicker/",
+    "issues": "https://github.com/eimi-codes/puppyclicker-mc/issues",
+    "sources": "https://github.com/eimi-codes/puppyclicker-mc"
+  },
+  "license": "${mod_license}",
+  "icon": "puppyclicker-icon.png",
+  "environment": "*",
+  "entrypoints": {
+    "main": [
+      "ie.eim.puppyclicker.PuppyClickerMod"
+    ],
+    "client": [
+      "ie.eim.puppyclicker.PuppyClickerClient"
+    ]
+  },
+  "mixins": [
+    "puppyclicker.mixins.json"
+  ],
+  "depends": {
+    "fabricloader": ">=${fabric_loader_version}",
+    "minecraft": "=${minecraft_version}",
+    "java": ">=${java_version}",
+    "fabric-api": "*"
+  }
+}

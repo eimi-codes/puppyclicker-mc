@@ -1,0 +1,96 @@
+group = rootProject.mod_group_id
+version = rootProject.mod_version
+
+base {
+    archivesName = "${rootProject.mod_id}-fabric-${minecraft_version}"
+}
+
+java {
+    toolchain.languageVersion = JavaLanguageVersion.of(java_version as int)
+}
+
+sourceSets.main.resources {
+    srcDir rootProject.file('platforms/fabric/common/src/main/resources')
+}
+
+loom {
+    splitEnvironmentSourceSets()
+
+    runs {
+        client {
+            client()
+            runDir = 'run'
+        }
+        server {
+            server()
+            runDir = 'run'
+            programArgs '--nogui'
+        }
+    }
+
+    mods {
+        "${rootProject.mod_id}" {
+            sourceSet sourceSets.main
+            sourceSet sourceSets.client
+        }
+    }
+}
+
+dependencies {
+    minecraft "com.mojang:minecraft:${minecraft_version}"
+    if (minecraft_version == '26.1.2') {
+        // Minecraft 26.1 is unobfuscated, so the non-remapping Loom plugin exposes
+        // ordinary dependency configurations and does not need a mappings artifact.
+        implementation "net.fabricmc:fabric-loader:${fabric_loader_version}"
+        implementation "net.fabricmc.fabric-api:fabric-api:${fabric_api_version}"
+    } else {
+        mappings loom.officialMojangMappings()
+        modImplementation "net.fabricmc:fabric-loader:${fabric_loader_version}"
+        modImplementation "net.fabricmc.fabric-api:fabric-api:${fabric_api_version}"
+    }
+    implementation project(':common')
+}
+
+tasks.named('processResources', ProcessResources).configure {
+    def replaceProperties = [
+            minecraft_version   : minecraft_version,
+            java_version        : java_version,
+            fabric_loader_version: fabric_loader_version,
+            mod_id              : rootProject.mod_id,
+            mod_name            : rootProject.mod_name,
+            mod_license         : rootProject.mod_license,
+            mod_version         : rootProject.mod_version,
+    ]
+    inputs.properties replaceProperties
+    filesMatching('fabric.mod.json') {
+        expand replaceProperties
+    }
+    from(rootProject.layout.projectDirectory) {
+        include 'LICENSE', 'ASSET_LICENSES.md', 'TEMPLATE_LICENSE.txt'
+        into 'META-INF'
+    }
+}
+
+tasks.named('jar', Jar).configure {
+    from(project(':common').sourceSets.main.output)
+}
+
+tasks.withType(JavaCompile).configureEach {
+    options.encoding = 'UTF-8'
+    options.release = java_version as int
+}
+
+publishing {
+    publications {
+        register('mavenJava', MavenPublication) {
+            from components.java
+        }
+    }
+}
+
+idea {
+    module {
+        downloadSources = true
+        downloadJavadoc = true
+    }
+}

@@ -1,0 +1,17 @@
+plugins {
+    id 'java-library'
+    id 'maven-publish'
+    id 'net.neoforged.moddev'
+    id 'idea'
+}
+
+ext {
+    minecraft_version = '1.21.11'
+    minecraft_version_range = '[1.21.11]'
+    neo_version = '21.11.45'
+    neo_version_range = '[21.11.45,21.12)'
+    loader_version_range = '[1,)'
+    java_version = 21
+}
+
+apply from: rootProject.file('gradle/neoforge-platform.gradle')

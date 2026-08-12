@@ -1,0 +1,91 @@
+group = rootProject.mod_group_id
+version = rootProject.mod_version
+
+base {
+    archivesName = "${rootProject.mod_id}-forge-${minecraft_version}"
+}
+
+java.toolchain.languageVersion = JavaLanguageVersion.of(java_version as int)
+
+sourceSets.main.resources {
+    srcDir rootProject.file('platforms/forge/common/src/main/resources')
+}
+
+repositories {
+    mavenCentral()
+}
+
+legacyForge {
+    version = "${minecraft_version}-${forge_version}"
+
+    runs {
+        client {
+            client()
+            gameDirectory = project.file('run')
+        }
+        server {
+            server()
+            gameDirectory = project.file('run')
+            programArgument '--nogui'
+        }
+    }
+
+    mods {
+        "${rootProject.mod_id}" {
+            sourceSet(sourceSets.main)
+        }
+    }
+}
+
+dependencies {
+    implementation project(':common')
+}
+
+def generateModMetadata = tasks.register('generateModMetadata', ProcessResources) {
+    def replaceProperties = [
+            minecraft_version      : minecraft_version,
+            minecraft_version_range: minecraft_version_range,
+            forge_version_range    : forge_version_range,
+            loader_version_range   : loader_version_range,
+            mod_id                 : rootProject.mod_id,
+            mod_name               : rootProject.mod_name,
+            mod_license            : rootProject.mod_license,
+            mod_version            : rootProject.mod_version,
+    ]
+    inputs.properties replaceProperties
+    expand replaceProperties
+    from rootProject.file('platforms/forge/common/src/main/templates')
+    into layout.buildDirectory.dir('generated/modMetadata')
+}
+
+sourceSets.main.resources.srcDir generateModMetadata
+
+tasks.named('jar', Jar).configure {
+    from(project(':common').sourceSets.main.output)
+}
+
+tasks.named('processResources', ProcessResources).configure {
+    from(rootProject.layout.projectDirectory) {
+        include 'LICENSE', 'ASSET_LICENSES.md', 'TEMPLATE_LICENSE.txt'
+        into 'META-INF'
+    }
+}
+
+tasks.withType(JavaCompile).configureEach {
+    options.encoding = 'UTF-8'
+}
+
+publishing {
+    publications {
+        register('mavenJava', MavenPublication) {
+            from components.java
+        }
+    }
+}
+
+idea {
+    module {
+        downloadSources = true
+        downloadJavadoc = true
+    }
+}

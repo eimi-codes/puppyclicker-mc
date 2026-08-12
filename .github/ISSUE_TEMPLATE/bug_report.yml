@@ -9,7 +9,7 @@ body:
       value: |
         Thank you for reporting a problem. Plain-language descriptions are welcome.
 
-        **Never paste an API key, access token, or `puppyclicker-client.toml` file.** Review logs and screenshots for private information before attaching them.
+        **Never paste an API key, access token, or `puppyclicker-client.toml` / `puppyclicker-client.json` file.** Review logs and screenshots for private information before attaching them.
 
   - type: dropdown
     id: area
@@ -22,6 +22,7 @@ body:
         - Crafting or using a Puppy Clicker item
         - Friend list or binding a clicker
         - Sending a click
+        - Automated advancement or damage actions
         - Multiplayer or dedicated server
         - Messages, accessibility, or visual layout
         - Something else or I am not sure
@@ -62,16 +63,16 @@ body:
     id: minecraft_version
     attributes:
       label: Minecraft version
-      placeholder: 1.21.1
+      placeholder: 1.18.2, 1.19.2, 1.20.1, 1.21.1, 1.21.11, or 26.1.2
     validations:
       required: true
 
   - type: input
-    id: neoforge_version
+    id: loader_version
     attributes:
-      label: NeoForge version
+      label: Loader and version
       description: If you cannot find this, say “not sure”.
-      placeholder: 21.1.243
+      placeholder: Forge 47.4.22, Fabric Loader 0.19.3, or NeoForge 21.11.45
     validations:
       required: true
 

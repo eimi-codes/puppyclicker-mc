@@ -1,0 +1,28 @@
+modLoader="javafml"
+loaderVersion="${loader_version_range}"
+license="${mod_license}"
+issueTrackerURL="https://github.com/eimi-codes/puppyclicker-mc/issues"
+
+[[mods]]
+modId="${mod_id}"
+version="${mod_version}"
+displayName="${mod_name}"
+displayURL="https://modrinth.com/project/puppyclicker/"
+logoFile="puppyclicker-icon.png"
+authors="Éimí Mhic an Ridire"
+displayTest="MATCH_VERSION"
+description='''Connect Minecraft to PuppyClicker with manual clickers and explicitly enabled, self-targeted gameplay automations.'''
+
+[[dependencies.${mod_id}]]
+modId="forge"
+mandatory=true
+versionRange="${forge_version_range}"
+ordering="NONE"
+side="BOTH"
+
+[[dependencies.${mod_id}]]
+modId="minecraft"
+mandatory=true
+versionRange="${minecraft_version_range}"
+ordering="NONE"
+side="BOTH"
