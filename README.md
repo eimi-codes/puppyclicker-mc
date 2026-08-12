@@ -1,5 +1,15 @@
 # PuppyClicker for Minecraft
 
+[![Latest GitHub release](https://img.shields.io/github/v/release/eimi-codes/puppyclicker-mc?display_name=tag&sort=semver&style=flat-square&logo=github&label=GitHub%20release)](https://github.com/eimi-codes/puppyclicker-mc/releases/latest)
+[![Latest Modrinth version](https://img.shields.io/modrinth/v/puppyclicker?style=flat-square&logo=modrinth&label=Modrinth)](https://modrinth.com/mod/puppyclicker)
+[![Minecraft versions on Modrinth](https://img.shields.io/modrinth/game-versions/puppyclicker?style=flat-square&logo=modrinth&label=Modrinth%20Minecraft)](https://modrinth.com/mod/puppyclicker/versions)
+[![Latest CurseForge version](https://img.shields.io/curseforge/v/1650038?style=flat-square&logo=curseforge&label=CurseForge)](https://www.curseforge.com/minecraft/mc-mods/puppyclicker/)
+[![Minecraft versions on CurseForge](https://img.shields.io/curseforge/game-versions/1650038?style=flat-square&logo=curseforge&label=CurseForge%20Minecraft)](https://www.curseforge.com/minecraft/mc-mods/puppyclicker/files/all)
+
+**Download:** [Modrinth](https://modrinth.com/mod/puppyclicker) ·
+[CurseForge](https://www.curseforge.com/minecraft/mc-mods/puppyclicker/) ·
+[GitHub Releases](https://github.com/eimi-codes/puppyclicker-mc/releases/latest)
+
 PuppyClicker for Minecraft is a NeoForge, Forge, and Fabric mod that connects
 Minecraft to a
 [PuppyClicker](https://puppyclicker.app/) account. Send a self-click with
@@ -223,6 +233,7 @@ CC BY-SA 4.0 terms.
 - [Author — Éimí Mhic an Ridire](https://eim.ie/)
 - [PuppyClicker](https://puppyclicker.app/)
 - [PuppyClicker API documentation](https://puppyclicker.app/docs/api/v2/)
-- [Modrinth project](https://modrinth.com/project/puppyclicker/)
+- [Modrinth project](https://modrinth.com/mod/puppyclicker)
+- [CurseForge project](https://www.curseforge.com/minecraft/mc-mods/puppyclicker/)
 - [GitHub repository](https://github.com/eimi-codes/puppyclicker-mc)
 - [GitHub releases](https://github.com/eimi-codes/puppyclicker-mc/releases/)
