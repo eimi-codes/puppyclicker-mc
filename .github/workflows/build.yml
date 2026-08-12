@@ -80,5 +80,23 @@ jobs:
           java-version: ${{ matrix.java }}
           cache: gradle
 
+      - name: Prepare Gradle wrapper
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          for attempt in 1 2 3; do
+            if ./gradlew --version; then
+              break
+            fi
+
+            if [[ "$attempt" -eq 3 ]]; then
+              echo "Gradle wrapper download failed after $attempt attempts." >&2
+              exit 1
+            fi
+
+            sleep $((attempt * 5))
+          done
+
       - name: Build and test
         run: ./gradlew --no-daemon ${{ matrix.task }}
