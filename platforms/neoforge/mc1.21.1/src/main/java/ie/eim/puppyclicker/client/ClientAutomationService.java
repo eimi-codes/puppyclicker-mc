@@ -5,6 +5,7 @@ import ie.eim.puppyclicker.shared.AutomationCooldown;
 import java.util.concurrent.TimeUnit;
 
 import ie.eim.puppyclicker.config.PuppyClickerConfig;
+import ie.eim.puppyclicker.network.AutomationTriggerPayload;
 import ie.eim.puppyclicker.network.AutomationTriggerPayload.AutomationTrigger;
 
 /** Applies client-only opt-in and safety settings to gameplay automation triggers. */
@@ -14,10 +15,10 @@ public final class ClientAutomationService {
     private ClientAutomationService() {
     }
 
-    public static void handleTrigger(AutomationTrigger trigger) {
-        switch (trigger) {
+    public static void handleTrigger(AutomationTriggerPayload payload) {
+        switch (payload.trigger()) {
             case ADVANCEMENT -> handleAdvancement();
-            case DAMAGE -> handleDamage();
+            case DAMAGE -> handleDamage(payload.attackerBoundFriendIds());
         }
     }
 
@@ -27,8 +28,11 @@ public final class ClientAutomationService {
         }
     }
 
-    private static void handleDamage() {
-        if (!PuppyClickerConfig.shockOnDamage()) {
+    private static void handleDamage(String attackerBoundFriendIds) {
+        if (!PuppyClickerConfig.shockOnDamage()
+                || !PuppyClickerConfig.damageTriggerMode().accepts(
+                        PuppyClickerConfig.accountId(),
+                        attackerBoundFriendIds)) {
             return;
         }
 

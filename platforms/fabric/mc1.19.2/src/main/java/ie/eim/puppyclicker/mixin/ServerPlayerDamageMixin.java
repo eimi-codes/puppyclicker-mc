@@ -21,7 +21,7 @@ abstract class ServerPlayerDamageMixin {
         if (amount > 0.0F && callback.getReturnValueZ()) {
             ModNetworking.sendToPlayer(
                     (ServerPlayer) (Object) this,
-                    new AutomationTriggerPayload(AutomationTrigger.DAMAGE));
+                    AutomationTriggerPayload.forDamage(source));
         }
     }
 }

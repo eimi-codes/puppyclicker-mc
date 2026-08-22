@@ -5,6 +5,28 @@ All notable changes to PuppyClicker for Minecraft are documented here.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and the project uses [Semantic Versioning](https://semver.org/).
 
+## [Unreleased]
+
+### Added
+
+- Damage automation can now be limited to attacks from a player carrying a
+  Puppy Clicker bound to the person being damaged, while the existing
+  all-damage mode remains the default.
+
+### Security
+
+- The clicker-holder damage mode compares public PuppyClicker IDs from bound
+  inventory items with the public account ID returned by `GET /me`; API keys
+  remain client-only and are never included in gameplay packets.
+
+### Fixed
+
+- Damage-triggered OSC requests now include the required subtype, intensity,
+  and duration fields.
+- API-key validation now discovers online OSC capabilities and device-specific
+  limits; the automation screen offers only available action types and clamps
+  intensity and duration to those limits.
+
 ## [2.0.0] - 2026-08-12
 
 ### Added
@@ -57,5 +79,6 @@ and the project uses [Semantic Versioning](https://semver.org/).
 - Asynchronous API requests, controlled error feedback, rate-limit handling,
   and dedicated-server-safe client separation.
 
+[Unreleased]: https://github.com/eimi-codes/puppyclicker-mc/compare/v2.0.0...HEAD
 [2.0.0]: https://github.com/eimi-codes/puppyclicker-mc/compare/v1.0.0...v2.0.0
 [1.0.0]: https://github.com/eimi-codes/puppyclicker-mc/releases/tag/v1.0.0

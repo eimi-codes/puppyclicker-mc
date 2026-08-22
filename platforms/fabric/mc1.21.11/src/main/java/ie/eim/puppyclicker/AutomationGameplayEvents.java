@@ -15,17 +15,19 @@ public final class AutomationGameplayEvents {
         ServerLivingEntityEvents.AFTER_DAMAGE.register(
                 (entity, source, baseDamage, damageTaken, blocked) -> {
                     if (entity instanceof ServerPlayer player && damageTaken > 0.0F && !blocked) {
-                        sendDamage(player);
+                        sendDamage(player, source);
                     }
                 });
         ServerLivingEntityEvents.AFTER_DEATH.register((entity, source) -> {
             if (entity instanceof ServerPlayer player) {
-                sendDamage(player);
+                sendDamage(player, source);
             }
         });
     }
 
-    private static void sendDamage(ServerPlayer player) {
-        ModNetworking.sendToPlayer(player, new AutomationTriggerPayload(AutomationTrigger.DAMAGE));
+    private static void sendDamage(
+            ServerPlayer player,
+            net.minecraft.world.damagesource.DamageSource source) {
+        ModNetworking.sendToPlayer(player, AutomationTriggerPayload.forDamage(source));
     }
 }

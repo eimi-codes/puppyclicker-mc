@@ -33,7 +33,7 @@ public final class AutomationGameplayEvents {
         if (event.getEntity() instanceof ServerPlayer player && event.getAmount() > 0.0F) {
             ModNetworking.sendToPlayer(
                     player,
-                    new AutomationTriggerPayload(AutomationTrigger.DAMAGE));
+                    AutomationTriggerPayload.forDamage(event.getSource()));
         }
     }
 }

@@ -77,9 +77,11 @@ Minecraft click:
 - Send clicks without blocking Minecraft's render thread.
 - Optionally send a self-click to the player's own devices after earning a
   visible advancement.
-- Optionally send an OSC shock action to the player's own configured
-  PuppyClicker devices after taking damage, with a 15–300 second repeat
-  cooldown.
+- Optionally send a configurable OSC action to the player's own PuppyClicker
+  devices after taking damage. Available action types and the intensity and
+  duration ranges come from the player's online devices. Damage can come from
+  anything, or only from a player carrying a Puppy Clicker bound to the person
+  being damaged; a separate 15–300 second repeat cooldown remains in place.
 - Display concise success, rate-limit, credential, HTTP, and network feedback
   above the hotbar.
 - Prevent overlapping requests, apply a one-second local cooldown, and honour
@@ -131,10 +133,14 @@ PuppyClicker API key and does not connect to the PuppyClicker API.
    and choose **Config**. On Fabric, press `O` to open PuppyClicker settings;
    this binding can be changed under Controls.
 3. Enter the API key in the masked field and choose **Validate & Save**. The mod
-   verifies the key through `GET /api/v2/me` before saving it.
+   verifies the key through `GET /api/v2/me`, then checks online OSC actions
+   and their limits through `GET /api/v2/puppies/self/actions` before saving.
 4. To opt into gameplay-triggered actions, choose **Automated Actions…** and
-   enable **Clicks on advancements**, **Shocks on damage**, or both. Each
-   category is independent and disabled by default.
+   enable **Clicks on advancements**, **OSC actions on damage**, or both. The
+   damage controls let you choose whether any damage counts or only an attack
+   from someone carrying a clicker bound to you, plus an available action type,
+   intensity, and duration. Each category is independent and disabled by
+   default.
 5. Press `P` to send a self-click. Change this binding under
    **Options → Controls → Key Binds → PuppyClicker** if needed.
 6. Craft a Puppy Clicker with a stone button, an iron nugget, and redstone in
@@ -148,8 +154,10 @@ PuppyClicker API key and does not connect to the PuppyClicker API.
 
 NeoForge and Forge store configuration in
 `config/puppyclicker-client.toml`; Fabric uses
-`config/puppyclicker-client.json`. The same screen controls a separate 15–300
-second cooldown for damage-triggered actions; 30 seconds is the default.
+`config/puppyclicker-client.json`. Validated OSC capabilities are cached there
+alongside the account's public PuppyClicker ID, without adding another
+credential. The same screen controls a separate 15–300 second cooldown for
+damage-triggered actions; 30 seconds is the default.
 
 ## Privacy and informed consent
 
@@ -167,17 +175,22 @@ Git.
 
 A bound clicker stores the selected friend's public PuppyClicker identifier and
 display name. Minecraft synchronises item data, so that binding information is
-visible to the Minecraft server.
+visible to the Minecraft server. For the optional **Carries my clicker** damage
+mode, the server includes the canonical public IDs from bound Puppy Clickers in
+the attacker's inventory in the damage event sent to the victim's client. The
+client compares those IDs with the public account ID cached by **Validate &
+Save**. The API key is never included in that packet.
 
 Advancement automation sends a self-click through
-`POST /api/v2/clicks/self`. Damage automation sends only an OSC action type to
-`POST /api/v2/puppies/self/actions`; it does not include a friend identifier,
-message, or integration override. Each request is made only when its separate
-client-side setting is enabled. The mod does not contact OpenShock directly or
-choose shock intensity/duration. PuppyClicker and the player's own device
-configuration remain responsible for delivery, Do Not Disturb, and physical
-safety settings. A hard 15-second minimum damage cooldown prevents rapid repeat
-requests.
+`POST /api/v2/clicks/self`. Damage automation sends an OSC action type,
+subtype, intensity, and duration to `POST /api/v2/puppies/self/actions`; it does
+not include a friend identifier, message, or integration override. The choices
+are limited to the online device capabilities returned during API-key
+validation. Each request is made only when its separate client-side setting is
+enabled. The mod does not contact OpenShock directly. PuppyClicker and the
+player's own device configuration remain responsible for delivery, Do Not
+Disturb, and physical safety settings. A hard 15-second minimum damage cooldown
+prevents rapid repeat requests.
 
 ## Current scope and planned work
 

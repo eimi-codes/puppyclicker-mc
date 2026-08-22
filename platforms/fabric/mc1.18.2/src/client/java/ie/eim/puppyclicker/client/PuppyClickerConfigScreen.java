@@ -1,6 +1,7 @@
 package ie.eim.puppyclicker.client;
 
 import ie.eim.puppyclicker.api.PuppyClickerApi;
+import ie.eim.puppyclicker.api.PuppyClickerApi.OscActionCapabilities;
 import ie.eim.puppyclicker.api.PuppyClickerApi.ValidationResult;
 import ie.eim.puppyclicker.config.PuppyClickerConfig;
 import com.mojang.blaze3d.vertex.PoseStack;
@@ -20,7 +21,8 @@ import net.minecraft.util.FormattedCharSequence;
 /**
  * Credential editor exposed through Mods -> Config.
  *
- * <p>The draft remains unsaved until {@code GET /me} accepts it. The field is masked by default,
+ * <p>The draft remains unsaved until {@code GET /me} accepts it and device capabilities are
+ * checked. The field is masked by default,
  * and its narration deliberately omits the value so screen readers cannot announce a secret.</p>
  */
 public final class PuppyClickerConfigScreen extends Screen {
@@ -138,7 +140,7 @@ public final class PuppyClickerConfigScreen extends Screen {
     }
 
     private void clearSavedKey() {
-        PuppyClickerConfig.saveApiKey("");
+        PuppyClickerConfig.clearApiKey();
         draftApiKey = "";
         apiKeyField.setValue("");
         status = new TranslatableComponent("screen.puppyclicker.config.status.cleared")
@@ -186,9 +188,15 @@ public final class PuppyClickerConfigScreen extends Screen {
     private void applyValidationResult(String candidate, ValidationResult result) {
         status = switch (result.outcome()) {
             case SUCCESS -> {
-                PuppyClickerConfig.saveApiKey(candidate);
+                OscActionCapabilities capabilities = result.oscCapabilities();
+                PuppyClickerConfig.saveValidatedApiKey(candidate, result.accountId(), capabilities);
                 draftApiKey = candidate;
-                yield new TranslatableComponent("screen.puppyclicker.config.status.saved")
+                yield new TranslatableComponent(
+                                capabilities.available()
+                                        ? "screen.puppyclicker.config.status.saved_with_osc"
+                                        : "screen.puppyclicker.config.status.saved_no_osc",
+                                capabilities.maxIntensity(),
+                                capabilities.maxDurationMillis())
                         .withStyle(ChatFormatting.GREEN);
             }
             case INVALID_REQUEST -> new TranslatableComponent("message.puppyclicker.invalid_api_key_format")
