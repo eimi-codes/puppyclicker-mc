@@ -79,7 +79,7 @@ class PuppyClickerApiTest {
                 PuppyClickerApi.parseOscCapabilities(response);
 
         assertTrue(capabilities.available());
-        assertEquals(List.of("Shock", "Vibrate", "Sound", "Stop"), capabilities.subtypes());
+        assertEquals(List.of("Shock", "Vibrate", "Sound"), capabilities.subtypes());
         assertEquals(0, capabilities.minIntensity());
         assertEquals(60, capabilities.maxIntensity());
         assertEquals(300, capabilities.minDurationMillis());
@@ -123,5 +123,20 @@ class PuppyClickerApiTest {
         assertEquals(
                 original,
                 PuppyClickerApi.OscActionCapabilities.fromConfigString(original.toConfigString()));
+    }
+
+    @Test
+    void stopIsNotAvailableForDamageAutomation() {
+        PuppyClickerApi.OscActionCapabilities capabilities =
+                new PuppyClickerApi.OscActionCapabilities(
+                        true,
+                        List.of("Stop", "Vibrate"),
+                        0,
+                        40,
+                        300,
+                        4000);
+
+        assertEquals(List.of("Vibrate"), capabilities.subtypes());
+        assertEquals("Vibrate", capabilities.normalizeSubtype("Stop"));
     }
 }

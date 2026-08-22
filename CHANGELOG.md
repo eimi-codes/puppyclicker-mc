@@ -26,6 +26,8 @@ and the project uses [Semantic Versioning](https://semver.org/).
 - API-key validation now discovers online OSC capabilities and device-specific
   limits; the automation screen offers only available action types and clamps
   intensity and duration to those limits.
+- The non-triggering `Stop` OSC command is no longer offered as a damage
+  automation action.
 
 ## [2.0.0] - 2026-08-12
 

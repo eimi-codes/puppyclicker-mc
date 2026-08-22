@@ -549,6 +549,7 @@ public final class PuppyClickerApi {
             int minDurationMillis,
             int maxDurationMillis) {
         public static final String DEFAULT_SUBTYPE = "Shock";
+        private static final String STOP_SUBTYPE = "Stop";
         public static final int DEFAULT_INTENSITY = 50;
         public static final int DEFAULT_DURATION_MILLIS = 500;
 
@@ -560,6 +561,7 @@ public final class PuppyClickerApi {
                     String trimmed = subtype == null ? "" : subtype.trim();
                     if (!trimmed.isEmpty()
                             && trimmed.length() <= 32
+                            && !trimmed.equalsIgnoreCase(STOP_SUBTYPE)
                             && !trimmed.contains(",")
                             && !trimmed.contains("|")
                             && normalized.add(trimmed.toLowerCase(Locale.ROOT))) {
