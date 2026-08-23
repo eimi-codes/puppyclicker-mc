@@ -74,6 +74,10 @@ jobs:
       - name: Check out source
         uses: actions/checkout@v7
 
+      - name: Validate release target manifest
+        if: matrix.name == 'Common tests'
+        run: .github/scripts/validate-release-targets.sh
+
       - name: Set up Java ${{ matrix.java }}
         uses: actions/setup-java@v5
         with:
