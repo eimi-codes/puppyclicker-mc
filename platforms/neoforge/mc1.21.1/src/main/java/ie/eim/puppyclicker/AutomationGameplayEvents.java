@@ -36,7 +36,7 @@ public final class AutomationGameplayEvents {
         if (event.getEntity() instanceof ServerPlayer player && event.getNewDamage() > 0.0F) {
             PacketDistributor.sendToPlayer(
                     player,
-                    new AutomationTriggerPayload(AutomationTrigger.DAMAGE));
+                    AutomationTriggerPayload.forDamage(event.getSource()));
         }
     }
 }

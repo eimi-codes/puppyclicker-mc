@@ -15,7 +15,7 @@ all useful contributions.
 - [Development setup](#development-setup)
 - [Building and verification](#building-and-verification)
 - [Code and documentation](#code-and-documentation)
-- [Publishing a GitHub release](#publishing-a-github-release)
+- [Publishing a release](#publishing-a-release)
 - [Licence and assets](#licence-and-assets)
 
 ## Project principles
@@ -24,7 +24,8 @@ all useful contributions.
 - Automated action categories must remain separately opt-in, default off, and
   use an appropriate cooldown or equivalent repeat guard.
 - Damage automation targets only the player's own PuppyClicker devices. The mod
-  does not contact OpenShock directly or select device intensity or duration.
+  does not contact OpenShock directly; action type, intensity, and duration
+  must remain constrained by the validated online device limits.
 - Keep the PuppyClicker API key on the client. Never place it in server data,
   item components, source code, `gradle.properties`, tests, screenshots, or
   logs.
@@ -118,10 +119,12 @@ If behaviour changes, update the README, translations, and relevant metadata
 in the same contribution. New player-facing text must use translation keys
 rather than hard-coded strings.
 
-## Publishing a GitHub release
+## Publishing a release
 
 This section is for project maintainers. Releases are built from tags by
-`.github/workflows/release.yml`.
+`.github/workflows/release.yml`. The canonical loader/version publishing matrix
+is `.github/release-targets.json`; keep it aligned with the modules that the
+root build produces.
 
 1. Set `mod_version` in `gradle.properties` to the version being released.
 2. Run `./gradlew build` and complete the relevant manual checks.
@@ -129,16 +132,26 @@ This section is for project maintainers. Releases are built from tags by
 4. Create and push an annotated semantic-version tag:
 
    ```bash
-   git tag -a v2.0.0 -m "PuppyClicker for Minecraft v2.0.0"
-   git push origin v2.0.0
+   git tag -a v2.1.0 -m "PuppyClicker for Minecraft v2.1.0"
+   git push origin v2.1.0
    ```
 
 The workflow verifies that the tag and `mod_version` match, makes all 15
 loader/version JARs with the Java 17, 21, and 25 toolchains, and publishes each
-JAR with its own SHA-256 checksum and generated release notes. Tags with a suffix such as
-`v2.1.0-beta.1` are published as prereleases and are not marked as the latest
-stable release. Validation and every build must succeed before the workflow
-attempts to create a release.
+JAR with its own SHA-256 checksum and generated release notes. After GitHub
+publishing succeeds, a restricted matrix job uploads each exact JAR to Modrinth
+and CurseForge with its matching loader and Minecraft version. The repository
+must have `MODRINTH_TOKEN` and `CURSEFORGE_TOKEN` configured as Actions secrets.
+
+Tags with a suffix such as `v2.2.0-beta.1` are published as prereleases and are
+not marked as the latest stable release. Validation and every build must
+succeed before the workflow attempts to create a release. Marketplace failures
+fail only their exact platform/loader/version job so maintainers can rerun the
+failed jobs without rebuilding or re-uploading successful targets.
+
+The 2.1 release line is the final line publishing Forge or Minecraft versions
+older than 1.21.1. The 3.0 release matrix will contain only Fabric and NeoForge
+targets for Minecraft 1.21.1 and newer.
 
 ## Licence and assets
 

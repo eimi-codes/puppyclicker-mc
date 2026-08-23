@@ -54,10 +54,14 @@ public final class ClientClickService {
     }
 
     public static void sendDamageShock() {
+        String actionType = PuppyClickerConfig.damageActionType();
         sendAction(
-                () -> PuppyClickerApi.sendSelfShock(
-                        PuppyClickerConfig.apiKey().trim()),
-                new TranslatableComponent("message.puppyclicker.damage_shock_sent"));
+                () -> PuppyClickerApi.sendSelfOscAction(
+                        PuppyClickerConfig.apiKey().trim(),
+                        actionType,
+                        PuppyClickerConfig.damageActionIntensity(),
+                        PuppyClickerConfig.damageActionDurationMillis()),
+                new TranslatableComponent("message.puppyclicker.damage_action_sent", actionType));
     }
 
     private static void sendAction(

@@ -5,7 +5,8 @@ on:
     tags:
       - "v*.*.*"
 
-# Creating the release and uploading its assets are the only write operations.
+# Repository writes are limited to the GitHub release; marketplace uploads use
+# their dedicated API tokens and run with read-only repository permissions.
 permissions:
   contents: write
 
@@ -18,12 +19,29 @@ jobs:
     name: Build and publish tagged release
     runs-on: ubuntu-latest
     timeout-minutes: 90
+    outputs:
+      version: ${{ steps.version.outputs.version }}
+      version_type: ${{ steps.version.outputs.version_type }}
+      targets: ${{ steps.targets.outputs.targets }}
 
     steps:
       - name: Check out tagged source
         uses: actions/checkout@v7
         with:
           fetch-depth: 0
+
+      - name: Check marketplace publishing credentials
+        shell: bash
+        env:
+          CURSEFORGE_TOKEN: ${{ secrets.CURSEFORGE_TOKEN }}
+          MODRINTH_TOKEN: ${{ secrets.MODRINTH_TOKEN }}
+        run: |
+          set -euo pipefail
+
+          if [[ -z "$CURSEFORGE_TOKEN" || -z "$MODRINTH_TOKEN" ]]; then
+            echo "CURSEFORGE_TOKEN and MODRINTH_TOKEN must be configured as Actions secrets." >&2
+            exit 1
+          fi
 
       - name: Set up Java 21
         uses: actions/setup-java@v5
@@ -82,12 +100,29 @@ jobs:
           fi
 
           prerelease=false
+          version_type=release
           if [[ "$version" == *-* ]]; then
             prerelease=true
+            version_type=beta
+            if [[ "${version,,}" == *alpha* ]]; then
+              version_type=alpha
+            fi
           fi
 
-          echo "version=$version" >> "$GITHUB_OUTPUT"
-          echo "prerelease=$prerelease" >> "$GITHUB_OUTPUT"
+          {
+            echo "version=$version"
+            echo "prerelease=$prerelease"
+            echo "version_type=$version_type"
+          } >> "$GITHUB_OUTPUT"
+
+      - name: Validate release target manifest
+        id: targets
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          .github/scripts/validate-release-targets.sh
+          echo "targets=$(jq -c . .github/release-targets.json)" >> "$GITHUB_OUTPUT"
 
       - name: Build release JARs
         run: ./gradlew --no-daemon build
@@ -99,25 +134,8 @@ jobs:
         run: |
           set -euo pipefail
 
-          targets=(
-            "platforms/neoforge/mc1.21.1/build/libs/puppyclicker-neoforge-1.21.1-${VERSION}.jar"
-            "platforms/neoforge/mc1.21.11/build/libs/puppyclicker-neoforge-1.21.11-${VERSION}.jar"
-            "platforms/neoforge/mc26.1.2/build/libs/puppyclicker-neoforge-26.1.2-${VERSION}.jar"
-            "platforms/forge/mc1.18.2/build/libs/puppyclicker-forge-1.18.2-${VERSION}.jar"
-            "platforms/forge/mc1.19.2/build/libs/puppyclicker-forge-1.19.2-${VERSION}.jar"
-            "platforms/forge/mc1.20.1/build/libs/puppyclicker-forge-1.20.1-${VERSION}.jar"
-            "platforms/forge/mc1.21.1/build/libs/puppyclicker-forge-1.21.1-${VERSION}.jar"
-            "platforms/forge/mc1.21.11/build/libs/puppyclicker-forge-1.21.11-${VERSION}.jar"
-            "platforms/forge/mc26.1.2/build/libs/puppyclicker-forge-26.1.2-${VERSION}.jar"
-            "platforms/fabric/mc1.18.2/build/libs/puppyclicker-fabric-1.18.2-${VERSION}.jar"
-            "platforms/fabric/mc1.19.2/build/libs/puppyclicker-fabric-1.19.2-${VERSION}.jar"
-            "platforms/fabric/mc1.20.1/build/libs/puppyclicker-fabric-1.20.1-${VERSION}.jar"
-            "platforms/fabric/mc1.21.1/build/libs/puppyclicker-fabric-1.21.1-${VERSION}.jar"
-            "platforms/fabric/mc1.21.11/build/libs/puppyclicker-fabric-1.21.11-${VERSION}.jar"
-            "platforms/fabric/mc26.1.2/build/libs/puppyclicker-fabric-26.1.2-${VERSION}.jar"
-          )
-
-          for artifact in "${targets[@]}"; do
+          while IFS= read -r template; do
+            artifact="${template/\{version\}/$VERSION}"
             if [[ ! -f "$artifact" ]]; then
               echo "Expected release artifact was not built: $artifact" >&2
               exit 1
@@ -130,7 +148,7 @@ jobs:
               cd "$artifact_dir"
               sha256sum "$artifact_name" > "${artifact_name}.sha256"
             )
-          done
+          done < <(jq -r '.[].artifact' .github/release-targets.json)
 
       - name: Prepare release notes
         shell: bash
@@ -162,9 +180,10 @@ jobs:
           set -euo pipefail
 
           assets=()
-          for artifact in platforms/{neoforge,forge,fabric}/*/build/libs/puppyclicker-*-"${VERSION}".jar; do
+          while IFS= read -r template; do
+            artifact="${template/\{version\}/$VERSION}"
             assets+=("$artifact" "${artifact}.sha256")
-          done
+          done < <(jq -r '.[].artifact' .github/release-targets.json)
 
           if [[ "${#assets[@]}" -ne 30 ]]; then
             echo "Expected 15 JARs and 15 checksums, found ${#assets[@]} assets." >&2
@@ -178,3 +197,87 @@ jobs:
           fi
 
           gh "${args[@]}"
+
+  publish-marketplaces:
+    name: ${{ matrix.platform }} · ${{ matrix.target.display }} ${{ matrix.target.minecraft }}
+    needs: release
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    permissions:
+      contents: read
+    strategy:
+      fail-fast: false
+      max-parallel: 4
+      matrix:
+        platform:
+          - modrinth
+          - curseforge
+        target: ${{ fromJSON(needs.release.outputs.targets) }}
+
+    steps:
+      - name: Download GitHub release asset and notes
+        id: asset
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+          VERSION: ${{ needs.release.outputs.version }}
+        run: |
+          set -euo pipefail
+
+          template='${{ matrix.target.artifact }}'
+          artifact="${template/\{version\}/$VERSION}"
+          filename="$(basename "$artifact")"
+
+          mkdir -p marketplace
+          gh release download "$GITHUB_REF_NAME" \
+            --repo "$GITHUB_REPOSITORY" \
+            --pattern "$filename" \
+            --dir marketplace
+          gh release view "$GITHUB_REF_NAME" \
+            --repo "$GITHUB_REPOSITORY" \
+            --json body \
+            --jq .body > marketplace/release-notes.md
+
+          test -s "marketplace/$filename"
+          test -s marketplace/release-notes.md
+          echo "file=marketplace/$filename" >> "$GITHUB_OUTPUT"
+
+      - name: Publish to Modrinth
+        if: matrix.platform == 'modrinth'
+        uses: Kira-NT/mc-publish@52307b03863581dec6b652b83e597aec02ebb075 # v3.3.1
+        with:
+          modrinth-id: puppyclicker
+          modrinth-token: ${{ secrets.MODRINTH_TOKEN }}
+          files: ${{ steps.asset.outputs.file }}
+          name: PuppyClicker ${{ needs.release.outputs.version }} — ${{ matrix.target.display }} ${{ matrix.target.minecraft }}
+          version: ${{ needs.release.outputs.version }}+${{ matrix.target.loader }}.${{ matrix.target.minecraft }}
+          version-type: ${{ needs.release.outputs.version_type }}
+          changelog-file: marketplace/release-notes.md
+          loaders: ${{ matrix.target.loader }}
+          environment: client | server
+          game-versions: ${{ matrix.target.minecraft }}
+          game-version-filter: none
+          java: ${{ matrix.target.java }}
+          retry-attempts: 3
+          retry-delay: 10000
+          fail-mode: fail
+
+      - name: Publish to CurseForge
+        if: matrix.platform == 'curseforge'
+        uses: Kira-NT/mc-publish@52307b03863581dec6b652b83e597aec02ebb075 # v3.3.1
+        with:
+          curseforge-id: 1650038
+          curseforge-token: ${{ secrets.CURSEFORGE_TOKEN }}
+          files: ${{ steps.asset.outputs.file }}
+          name: PuppyClicker ${{ needs.release.outputs.version }} — ${{ matrix.target.display }} ${{ matrix.target.minecraft }}
+          version: ${{ needs.release.outputs.version }}+${{ matrix.target.loader }}.${{ matrix.target.minecraft }}
+          version-type: ${{ needs.release.outputs.version_type }}
+          changelog-file: marketplace/release-notes.md
+          loaders: ${{ matrix.target.loader }}
+          environment: client | server
+          game-versions: ${{ matrix.target.minecraft }}
+          game-version-filter: none
+          java: ${{ matrix.target.java }}
+          retry-attempts: 3
+          retry-delay: 10000
+          fail-mode: fail

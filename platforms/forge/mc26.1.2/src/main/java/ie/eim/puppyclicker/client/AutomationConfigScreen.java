@@ -1,6 +1,8 @@
 package ie.eim.puppyclicker.client;
 
+import ie.eim.puppyclicker.api.PuppyClickerApi.OscActionCapabilities;
 import ie.eim.puppyclicker.config.PuppyClickerConfig;
+import ie.eim.puppyclicker.shared.DamageTriggerMode;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.TextAlignment;
 import net.minecraft.client.gui.components.AbstractSliderButton;
@@ -15,15 +17,25 @@ public final class AutomationConfigScreen extends Screen {
     private static final int CONTENT_WIDTH = 360;
 
     private final Screen parent;
+    private final OscActionCapabilities capabilities;
     private boolean clickOnAdvancement;
     private boolean shockOnDamage;
+    private DamageTriggerMode damageTriggerMode;
+    private String actionType;
+    private Button actionTypeButton;
+    private Button damageTriggerModeButton;
+    private IntSlider intensitySlider;
+    private IntSlider durationSlider;
     private IntSlider cooldownSlider;
 
     public AutomationConfigScreen(Screen parent) {
         super(Component.translatable("screen.puppyclicker.automations.title"));
         this.parent = parent;
+        this.capabilities = PuppyClickerConfig.oscCapabilities();
         this.clickOnAdvancement = PuppyClickerConfig.clickOnAdvancement();
-        this.shockOnDamage = PuppyClickerConfig.shockOnDamage();
+        this.shockOnDamage = capabilities.available() && PuppyClickerConfig.shockOnDamage();
+        this.damageTriggerMode = PuppyClickerConfig.damageTriggerMode();
+        this.actionType = capabilities.normalizeSubtype(PuppyClickerConfig.damageActionType());
     }
 
     @Override
@@ -34,30 +46,51 @@ public final class AutomationConfigScreen extends Screen {
 
         this.addRenderableWidget(CycleButton.onOffBuilder(clickOnAdvancement).create(
                 left,
-                72,
+                58,
                 halfWidth,
                 20,
                 Component.translatable("screen.puppyclicker.automations.advancement_clicks"),
                 (button, value) -> clickOnAdvancement = value));
-        this.addRenderableWidget(CycleButton.onOffBuilder(shockOnDamage).create(
+        CycleButton<Boolean> damageButton = this.addRenderableWidget(
+                CycleButton.onOffBuilder(shockOnDamage).create(
                 left + halfWidth + 6,
-                72,
+                58,
                 halfWidth,
                 20,
                 Component.translatable("screen.puppyclicker.automations.damage_shocks"),
                 (button, value) -> {
                     shockOnDamage = value;
-                    cooldownSlider.active = value;
+                    updateActionControls();
                 }));
+        damageButton.active = capabilities.available();
+
+        damageTriggerModeButton = this.addRenderableWidget(Button.builder(
+                        damageTriggerModeLabel(), button -> cycleDamageTriggerMode())
+                .bounds(left, 84, halfWidth, 20).build());
+        actionTypeButton = this.addRenderableWidget(Button.builder(
+                        actionTypeLabel(), button -> cycleActionType())
+                .bounds(left + halfWidth + 6, 84, halfWidth, 20)
+                .build());
+        intensitySlider = this.addRenderableWidget(new IntSlider(
+                left, 110, contentWidth,
+                capabilities.minIntensity(), capabilities.maxIntensity(),
+                PuppyClickerConfig.damageActionIntensity(),
+                "screen.puppyclicker.automations.intensity"));
+        durationSlider = this.addRenderableWidget(new IntSlider(
+                left, 136, contentWidth,
+                capabilities.minDurationMillis(), capabilities.maxDurationMillis(),
+                PuppyClickerConfig.damageActionDurationMillis(),
+                "screen.puppyclicker.automations.duration"));
 
         cooldownSlider = this.addRenderableWidget(new IntSlider(
                 left,
-                102,
+                162,
                 contentWidth,
                 15,
                 300,
-                PuppyClickerConfig.damageShockCooldownSeconds()));
-        cooldownSlider.active = shockOnDamage;
+                PuppyClickerConfig.damageShockCooldownSeconds(),
+                "screen.puppyclicker.automations.cooldown"));
+        updateActionControls();
 
         this.addRenderableWidget(Button.builder(
                         Component.translatable("screen.puppyclicker.automations.save"),
@@ -75,8 +108,44 @@ public final class AutomationConfigScreen extends Screen {
         PuppyClickerConfig.saveAutomationSettings(
                 clickOnAdvancement,
                 shockOnDamage,
-                cooldownSlider.intValue());
+                damageTriggerMode,
+                cooldownSlider.intValue(),
+                actionType,
+                intensitySlider.intValue(),
+                durationSlider.intValue());
         onClose();
+    }
+
+    private Component actionTypeLabel() {
+        return Component.translatable("screen.puppyclicker.automations.action_type", actionType);
+    }
+
+    private Component damageTriggerModeLabel() {
+        return Component.translatable("screen.puppyclicker.automations.damage_mode",
+                Component.translatable(damageTriggerMode == DamageTriggerMode.ALL_DAMAGE
+                        ? "screen.puppyclicker.automations.damage_mode.all"
+                        : "screen.puppyclicker.automations.damage_mode.clicker_holder"));
+    }
+
+    private void cycleDamageTriggerMode() {
+        damageTriggerMode = damageTriggerMode == DamageTriggerMode.ALL_DAMAGE
+                ? DamageTriggerMode.ATTACKER_CARRIES_MY_CLICKER : DamageTriggerMode.ALL_DAMAGE;
+        damageTriggerModeButton.setMessage(damageTriggerModeLabel());
+    }
+
+    private void cycleActionType() {
+        int current = capabilities.subtypes().indexOf(actionType);
+        actionType = capabilities.subtypes().get((current + 1) % capabilities.subtypes().size());
+        actionTypeButton.setMessage(actionTypeLabel());
+    }
+
+    private void updateActionControls() {
+        boolean active = shockOnDamage && capabilities.available();
+        damageTriggerModeButton.active = active;
+        actionTypeButton.active = active;
+        intensitySlider.active = active;
+        durationSlider.active = active;
+        cooldownSlider.active = active;
     }
 
     @Override
@@ -84,7 +153,9 @@ public final class AutomationConfigScreen extends Screen {
         return Component.empty()
                 .append(this.title)
                 .append(". ")
-                .append(Component.translatable("screen.puppyclicker.automations.safety_notice"));
+                .append(Component.translatable(capabilities.available()
+                        ? "screen.puppyclicker.automations.safety_notice"
+                        : "screen.puppyclicker.automations.no_osc"));
     }
 
     @Override
@@ -104,10 +175,12 @@ public final class AutomationConfigScreen extends Screen {
                 .visitLines(TextAlignment.CENTER, this.width / 2, 34, 9, graphics.textRenderer());
         MultiLineLabel.create(
                         this.font,
-                        Component.translatable("screen.puppyclicker.automations.safety_notice")
+                        Component.translatable(capabilities.available()
+                                ? "screen.puppyclicker.automations.safety_notice"
+                                : "screen.puppyclicker.automations.no_osc")
                                 .withColor(0xA0A0A0),
                         contentWidth)
-                .visitLines(TextAlignment.CENTER, this.width / 2, 136, 9, graphics.textRenderer());
+                .visitLines(TextAlignment.CENTER, this.width / 2, 188, 9, graphics.textRenderer());
     }
 
     @Override
@@ -125,17 +198,20 @@ public final class AutomationConfigScreen extends Screen {
     private static final class IntSlider extends AbstractSliderButton {
         private final int min;
         private final int max;
+        private final String messageKey;
 
-        private IntSlider(int x, int y, int width, int min, int max, int initialValue) {
+        private IntSlider(
+                int x, int y, int width, int min, int max, int initialValue, String messageKey) {
             super(
                     x,
                     y,
                     width,
                     20,
                     Component.empty(),
-                    (double) (initialValue - min) / (max - min));
+                    max == min ? 0.0 : (double) (initialValue - min) / (max - min));
             this.min = min;
             this.max = max;
+            this.messageKey = messageKey;
             updateMessage();
         }
 
@@ -145,8 +221,7 @@ public final class AutomationConfigScreen extends Screen {
 
         @Override
         protected void updateMessage() {
-            setMessage(Component.translatable(
-                    "screen.puppyclicker.automations.cooldown", intValue()));
+            setMessage(Component.translatable(messageKey, intValue()));
         }
 
         @Override

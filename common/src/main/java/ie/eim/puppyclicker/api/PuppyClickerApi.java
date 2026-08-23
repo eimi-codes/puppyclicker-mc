@@ -10,7 +10,10 @@ import java.net.http.HttpTimeoutException;
 import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 import java.util.ArrayList;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Locale;
+import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionException;
@@ -53,19 +56,38 @@ public final class PuppyClickerApi {
         return sendAction(apiKey, SELF_CLICK_URI, body.toString());
     }
 
-    /**
-     * Sends the configured OSC shock action to the authenticated player's own devices.
-     *
-     * <p>The self-action endpoint deliberately receives neither a friend identifier nor the
-     * friend-only {@code message} and {@code integration} fields.</p>
-     */
+    /** Sends the backwards-compatible default shock action (Shock, 50 intensity, 500 ms). */
     public static CompletableFuture<ClickResult> sendSelfShock(String apiKey) {
         return sendAction(apiKey, SELF_ACTION_URI, selfShockRequestBody());
     }
 
     static String selfShockRequestBody() {
+        return selfOscActionRequestBody(
+                OscActionCapabilities.DEFAULT_SUBTYPE,
+                OscActionCapabilities.DEFAULT_INTENSITY,
+                OscActionCapabilities.DEFAULT_DURATION_MILLIS);
+    }
+
+    public static CompletableFuture<ClickResult> sendSelfOscAction(
+            String apiKey,
+            String subtype,
+            int intensity,
+            int durationMillis) {
+        if (subtype == null || subtype.isBlank() || intensity < 0 || durationMillis <= 0) {
+            return CompletableFuture.completedFuture(ClickResult.invalidRequest());
+        }
+        return sendAction(
+                apiKey,
+                SELF_ACTION_URI,
+                selfOscActionRequestBody(subtype, intensity, durationMillis));
+    }
+
+    static String selfOscActionRequestBody(String subtype, int intensity, int durationMillis) {
         JsonObject body = new JsonObject();
         body.addProperty("type", "osc");
+        body.addProperty("subtype", subtype);
+        body.addProperty("intensity", intensity);
+        body.addProperty("duration", durationMillis);
         return body.toString();
     }
 
@@ -77,8 +99,13 @@ public final class PuppyClickerApi {
             return CompletableFuture.completedFuture(ValidationResult.invalidRequest());
         }
 
-        return HTTP_CLIENT.sendAsync(request, HttpResponse.BodyHandlers.discarding())
-                .handle(PuppyClickerApi::toValidationResult);
+        return HTTP_CLIENT.sendAsync(
+                        request,
+                        HttpResponse.BodyHandlers.ofString(StandardCharsets.UTF_8))
+                .handle(PuppyClickerApi::toValidationResult)
+                .thenCompose(result -> result.outcome() == Outcome.SUCCESS
+                        ? fetchSelfActions(apiKey, result.accountId())
+                        : CompletableFuture.completedFuture(result));
     }
 
     public static CompletableFuture<ClickResult> sendFriendClick(String apiKey, String friendId) {
@@ -109,6 +136,23 @@ public final class PuppyClickerApi {
                         request,
                         HttpResponse.BodyHandlers.ofString(StandardCharsets.UTF_8))
                 .handle(PuppyClickerApi::toFriendsResult);
+    }
+
+    private static CompletableFuture<ValidationResult> fetchSelfActions(
+            String apiKey,
+            String accountId) {
+        final HttpRequest request;
+        try {
+            request = requestBuilder(apiKey, SELF_ACTION_URI).GET().build();
+        } catch (IllegalArgumentException exception) {
+            return CompletableFuture.completedFuture(ValidationResult.invalidRequest());
+        }
+
+        return HTTP_CLIENT.sendAsync(
+                        request,
+                        HttpResponse.BodyHandlers.ofString(StandardCharsets.UTF_8))
+                .handle((response, throwable) ->
+                        toActionsValidationResult(response, throwable, accountId));
     }
 
     private static CompletableFuture<ClickResult> sendAction(String apiKey, URI uri, String body) {
@@ -152,7 +196,7 @@ public final class PuppyClickerApi {
     }
 
     private static ValidationResult toValidationResult(
-            HttpResponse<Void> response,
+            HttpResponse<String> response,
             Throwable throwable) {
         if (throwable != null) {
             return ValidationResult.fromOutcome(networkOutcome(throwable));
@@ -160,12 +204,50 @@ public final class PuppyClickerApi {
 
         int statusCode = response.statusCode();
         if (statusCode >= 200 && statusCode < 300) {
-            return ValidationResult.success(statusCode);
+            try {
+                return ValidationResult.success(
+                        statusCode,
+                        parseAccountId(response.body()),
+                        OscActionCapabilities.unavailable());
+            } catch (RuntimeException exception) {
+                return ValidationResult.invalidResponse();
+            }
         }
         if (statusCode == 429) {
             return ValidationResult.rateLimited(retryAfter(response));
         }
         return ValidationResult.httpError(statusCode);
+    }
+
+    private static ValidationResult toActionsValidationResult(
+            HttpResponse<String> response,
+            Throwable throwable,
+            String accountId) {
+        if (throwable != null) {
+            return ValidationResult.fromOutcome(networkOutcome(throwable));
+        }
+
+        int statusCode = response.statusCode();
+        if (statusCode == 429) {
+            return ValidationResult.rateLimited(retryAfter(response));
+        }
+        if (statusCode < 200 || statusCode >= 300) {
+            return ValidationResult.httpError(statusCode);
+        }
+
+        try {
+            return ValidationResult.success(
+                    statusCode,
+                    accountId,
+                    parseOscCapabilities(response.body()));
+        } catch (RuntimeException exception) {
+            return ValidationResult.invalidResponse();
+        }
+    }
+
+    static String parseAccountId(String body) {
+        JsonObject root = JsonParser.parseString(body).getAsJsonObject();
+        return UUID.fromString(stringValue(root, "id")).toString();
     }
 
     private static FriendsResult toFriendsResult(HttpResponse<String> response, Throwable throwable) {
@@ -207,6 +289,108 @@ public final class PuppyClickerApi {
         } catch (RuntimeException exception) {
             return FriendsResult.invalidResponse();
         }
+    }
+
+    static OscActionCapabilities parseOscCapabilities(String body) {
+        JsonObject root = JsonParser.parseString(body).getAsJsonObject();
+        JsonArray actions = root.getAsJsonArray("actions");
+        if (actions == null) {
+            throw new IllegalArgumentException("Missing actions array");
+        }
+
+        for (JsonElement element : actions) {
+            if (!element.isJsonObject()) {
+                continue;
+            }
+            JsonObject action = element.getAsJsonObject();
+            if (!"osc".equalsIgnoreCase(stringValue(action, "type"))) {
+                continue;
+            }
+            if (!requiredBoolean(action, "online")) {
+                continue;
+            }
+
+            List<String> subtypes = stringValues(action, "subtypes");
+            JsonObject params = requiredObject(action, "params");
+            JsonObject intensity = requiredObject(params, "intensity");
+            JsonObject duration = requiredObject(params, "duration");
+            int minIntensity = requiredInt(intensity, "min");
+            int maxIntensity = Math.min(
+                    requiredInt(action, "maxIntensity"),
+                    requiredInt(intensity, "max"));
+            int minDuration = requiredInt(duration, "min");
+            int maxDuration = Math.min(
+                    requiredInt(action, "maxDuration"),
+                    requiredInt(duration, "max"));
+
+            if (subtypes.isEmpty()
+                    || minIntensity < 0
+                    || maxIntensity < minIntensity
+                    || minDuration < 0
+                    || maxDuration < minDuration) {
+                throw new IllegalArgumentException("Invalid OSC action limits");
+            }
+            return new OscActionCapabilities(
+                    true,
+                    subtypes,
+                    minIntensity,
+                    maxIntensity,
+                    minDuration,
+                    maxDuration);
+        }
+        return OscActionCapabilities.unavailable();
+    }
+
+    private static JsonObject requiredObject(JsonObject object, String key) {
+        JsonElement value = object.get(key);
+        if (value == null || !value.isJsonObject()) {
+            throw new IllegalArgumentException("Missing object: " + key);
+        }
+        return value.getAsJsonObject();
+    }
+
+    private static boolean requiredBoolean(JsonObject object, String key) {
+        JsonElement value = object.get(key);
+        if (value == null || !value.isJsonPrimitive() || !value.getAsJsonPrimitive().isBoolean()) {
+            throw new IllegalArgumentException("Missing boolean: " + key);
+        }
+        return value.getAsBoolean();
+    }
+
+    private static int requiredInt(JsonObject object, String key) {
+        JsonElement value = object.get(key);
+        if (value == null || !value.isJsonPrimitive() || !value.getAsJsonPrimitive().isNumber()) {
+            throw new IllegalArgumentException("Missing number: " + key);
+        }
+        double number = value.getAsDouble();
+        int integer = value.getAsInt();
+        if (!Double.isFinite(number) || number != integer) {
+            throw new IllegalArgumentException("Expected integer: " + key);
+        }
+        return integer;
+    }
+
+    private static List<String> stringValues(JsonObject object, String key) {
+        JsonArray values = object.getAsJsonArray(key);
+        if (values == null) {
+            throw new IllegalArgumentException("Missing array: " + key);
+        }
+
+        Set<String> normalized = new LinkedHashSet<>();
+        List<String> result = new ArrayList<>();
+        for (JsonElement value : values) {
+            if (!value.isJsonPrimitive() || !value.getAsJsonPrimitive().isString()) {
+                throw new IllegalArgumentException("Expected string in: " + key);
+            }
+            String subtype = value.getAsString().trim();
+            if (subtype.isEmpty() || subtype.length() > 32) {
+                throw new IllegalArgumentException("Invalid OSC subtype");
+            }
+            if (normalized.add(subtype.toLowerCase(Locale.ROOT))) {
+                result.add(subtype);
+            }
+        }
+        return List.copyOf(result);
     }
 
     private static String stringValue(JsonObject object, String key) {
@@ -286,9 +470,39 @@ public final class PuppyClickerApi {
         }
     }
 
-    public record ValidationResult(Outcome outcome, int statusCode, String retryAfter) {
+    public record ValidationResult(
+            Outcome outcome,
+            int statusCode,
+            String retryAfter,
+            String accountId,
+            OscActionCapabilities oscCapabilities) {
+        public ValidationResult {
+            accountId = accountId == null ? "" : accountId;
+            oscCapabilities = oscCapabilities == null
+                    ? OscActionCapabilities.unavailable()
+                    : oscCapabilities;
+        }
+
         public static ValidationResult success(int statusCode) {
-            return new ValidationResult(Outcome.SUCCESS, statusCode, "");
+            return success(statusCode, "", OscActionCapabilities.unavailable());
+        }
+
+        public static ValidationResult success(
+                int statusCode,
+                OscActionCapabilities oscCapabilities) {
+            return success(statusCode, "", oscCapabilities);
+        }
+
+        public static ValidationResult success(
+                int statusCode,
+                String accountId,
+                OscActionCapabilities oscCapabilities) {
+            return new ValidationResult(
+                    Outcome.SUCCESS,
+                    statusCode,
+                    "",
+                    accountId,
+                    oscCapabilities);
         }
 
         public static ValidationResult invalidRequest() {
@@ -296,15 +510,141 @@ public final class PuppyClickerApi {
         }
 
         public static ValidationResult rateLimited(String retryAfter) {
-            return new ValidationResult(Outcome.RATE_LIMITED, 429, retryAfter);
+            return new ValidationResult(
+                    Outcome.RATE_LIMITED,
+                    429,
+                    retryAfter,
+                    "",
+                    OscActionCapabilities.unavailable());
         }
 
         public static ValidationResult httpError(int statusCode) {
-            return new ValidationResult(Outcome.HTTP_ERROR, statusCode, "");
+            return new ValidationResult(
+                    Outcome.HTTP_ERROR,
+                    statusCode,
+                    "",
+                    "",
+                    OscActionCapabilities.unavailable());
+        }
+
+        public static ValidationResult invalidResponse() {
+            return fromOutcome(Outcome.INVALID_RESPONSE);
         }
 
         public static ValidationResult fromOutcome(Outcome outcome) {
-            return new ValidationResult(outcome, 0, "");
+            return new ValidationResult(
+                    outcome,
+                    0,
+                    "",
+                    "",
+                    OscActionCapabilities.unavailable());
+        }
+    }
+
+    public record OscActionCapabilities(
+            boolean online,
+            List<String> subtypes,
+            int minIntensity,
+            int maxIntensity,
+            int minDurationMillis,
+            int maxDurationMillis) {
+        public static final String DEFAULT_SUBTYPE = "Shock";
+        private static final String STOP_SUBTYPE = "Stop";
+        public static final int DEFAULT_INTENSITY = 50;
+        public static final int DEFAULT_DURATION_MILLIS = 500;
+
+        public OscActionCapabilities {
+            Set<String> normalized = new LinkedHashSet<>();
+            List<String> sanitized = new ArrayList<>();
+            if (subtypes != null) {
+                for (String subtype : subtypes) {
+                    String trimmed = subtype == null ? "" : subtype.trim();
+                    if (!trimmed.isEmpty()
+                            && trimmed.length() <= 32
+                            && !trimmed.equalsIgnoreCase(STOP_SUBTYPE)
+                            && !trimmed.contains(",")
+                            && !trimmed.contains("|")
+                            && normalized.add(trimmed.toLowerCase(Locale.ROOT))) {
+                        sanitized.add(trimmed);
+                    }
+                }
+            }
+            subtypes = List.copyOf(sanitized);
+        }
+
+        public static OscActionCapabilities unavailable() {
+            return new OscActionCapabilities(false, List.of(), 0, 0, 0, 0);
+        }
+
+        public boolean available() {
+            return online
+                    && !subtypes.isEmpty()
+                    && minIntensity >= 0
+                    && maxIntensity >= minIntensity
+                    && minDurationMillis >= 0
+                    && maxDurationMillis >= minDurationMillis;
+        }
+
+        public String normalizeSubtype(String subtype) {
+            for (String availableSubtype : subtypes) {
+                if (availableSubtype.equalsIgnoreCase(subtype == null ? "" : subtype.trim())) {
+                    return availableSubtype;
+                }
+            }
+            for (String availableSubtype : subtypes) {
+                if (availableSubtype.equalsIgnoreCase(DEFAULT_SUBTYPE)) {
+                    return availableSubtype;
+                }
+            }
+            return subtypes.isEmpty() ? DEFAULT_SUBTYPE : subtypes.get(0);
+        }
+
+        public int clampIntensity(int intensity) {
+            if (!available()) {
+                return Math.max(0, intensity);
+            }
+            return Math.max(minIntensity, Math.min(maxIntensity, intensity));
+        }
+
+        public int clampDurationMillis(int durationMillis) {
+            if (!available()) {
+                return Math.max(0, durationMillis);
+            }
+            return Math.max(minDurationMillis, Math.min(maxDurationMillis, durationMillis));
+        }
+
+        public String toConfigString() {
+            if (!available()) {
+                return "";
+            }
+            return String.join(",", subtypes)
+                    + "|" + minIntensity
+                    + "|" + maxIntensity
+                    + "|" + minDurationMillis
+                    + "|" + maxDurationMillis;
+        }
+
+        public static OscActionCapabilities fromConfigString(String encoded) {
+            if (encoded == null || encoded.isBlank()) {
+                return unavailable();
+            }
+            try {
+                String[] fields = encoded.split("\\|", -1);
+                if (fields.length != 5) {
+                    return unavailable();
+                }
+                List<String> subtypes = List.of(fields[0].split(","));
+                OscActionCapabilities capabilities = new OscActionCapabilities(
+                        true,
+                        subtypes,
+                        Integer.parseInt(fields[1]),
+                        Integer.parseInt(fields[2]),
+                        Integer.parseInt(fields[3]),
+                        Integer.parseInt(fields[4]));
+                return capabilities.available() ? capabilities : unavailable();
+            } catch (RuntimeException exception) {
+                return unavailable();
+            }
         }
     }
 

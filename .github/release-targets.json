@@ -1,0 +1,107 @@
+[
+  {
+    "display": "NeoForge",
+    "loader": "neoforge",
+    "minecraft": "1.21.1",
+    "java": "21",
+    "artifact": "platforms/neoforge/mc1.21.1/build/libs/puppyclicker-neoforge-1.21.1-{version}.jar"
+  },
+  {
+    "display": "NeoForge",
+    "loader": "neoforge",
+    "minecraft": "1.21.11",
+    "java": "21",
+    "artifact": "platforms/neoforge/mc1.21.11/build/libs/puppyclicker-neoforge-1.21.11-{version}.jar"
+  },
+  {
+    "display": "NeoForge",
+    "loader": "neoforge",
+    "minecraft": "26.1.2",
+    "java": "25",
+    "artifact": "platforms/neoforge/mc26.1.2/build/libs/puppyclicker-neoforge-26.1.2-{version}.jar"
+  },
+  {
+    "display": "Forge",
+    "loader": "forge",
+    "minecraft": "1.18.2",
+    "java": "17",
+    "artifact": "platforms/forge/mc1.18.2/build/libs/puppyclicker-forge-1.18.2-{version}.jar"
+  },
+  {
+    "display": "Forge",
+    "loader": "forge",
+    "minecraft": "1.19.2",
+    "java": "17",
+    "artifact": "platforms/forge/mc1.19.2/build/libs/puppyclicker-forge-1.19.2-{version}.jar"
+  },
+  {
+    "display": "Forge",
+    "loader": "forge",
+    "minecraft": "1.20.1",
+    "java": "17",
+    "artifact": "platforms/forge/mc1.20.1/build/libs/puppyclicker-forge-1.20.1-{version}.jar"
+  },
+  {
+    "display": "Forge",
+    "loader": "forge",
+    "minecraft": "1.21.1",
+    "java": "21",
+    "artifact": "platforms/forge/mc1.21.1/build/libs/puppyclicker-forge-1.21.1-{version}.jar"
+  },
+  {
+    "display": "Forge",
+    "loader": "forge",
+    "minecraft": "1.21.11",
+    "java": "21",
+    "artifact": "platforms/forge/mc1.21.11/build/libs/puppyclicker-forge-1.21.11-{version}.jar"
+  },
+  {
+    "display": "Forge",
+    "loader": "forge",
+    "minecraft": "26.1.2",
+    "java": "25",
+    "artifact": "platforms/forge/mc26.1.2/build/libs/puppyclicker-forge-26.1.2-{version}.jar"
+  },
+  {
+    "display": "Fabric",
+    "loader": "fabric",
+    "minecraft": "1.18.2",
+    "java": "17",
+    "artifact": "platforms/fabric/mc1.18.2/build/libs/puppyclicker-fabric-1.18.2-{version}.jar"
+  },
+  {
+    "display": "Fabric",
+    "loader": "fabric",
+    "minecraft": "1.19.2",
+    "java": "17",
+    "artifact": "platforms/fabric/mc1.19.2/build/libs/puppyclicker-fabric-1.19.2-{version}.jar"
+  },
+  {
+    "display": "Fabric",
+    "loader": "fabric",
+    "minecraft": "1.20.1",
+    "java": "17",
+    "artifact": "platforms/fabric/mc1.20.1/build/libs/puppyclicker-fabric-1.20.1-{version}.jar"
+  },
+  {
+    "display": "Fabric",
+    "loader": "fabric",
+    "minecraft": "1.21.1",
+    "java": "21",
+    "artifact": "platforms/fabric/mc1.21.1/build/libs/puppyclicker-fabric-1.21.1-{version}.jar"
+  },
+  {
+    "display": "Fabric",
+    "loader": "fabric",
+    "minecraft": "1.21.11",
+    "java": "21",
+    "artifact": "platforms/fabric/mc1.21.11/build/libs/puppyclicker-fabric-1.21.11-{version}.jar"
+  },
+  {
+    "display": "Fabric",
+    "loader": "fabric",
+    "minecraft": "26.1.2",
+    "java": "25",
+    "artifact": "platforms/fabric/mc26.1.2/build/libs/puppyclicker-fabric-26.1.2-{version}.jar"
+  }
+]

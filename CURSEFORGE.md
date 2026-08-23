@@ -15,15 +15,19 @@ actions.
 - Craftable clicker items that can each be bound to a different accepted
   PuppyClicker friend.
 - Optional self-clicks for visible advancements.
-- Optional **self-targeted** OSC shocks after the player takes damage.
+- Optional **self-targeted** Shock, Vibrate, or Sound actions after the player
+  takes damage, constrained by the player's online device limits.
+- A choice between all damage or only attacks from someone carrying a Puppy
+  Clicker bound to the person being damaged.
 - A separate 15–300 second damage cooldown, defaulting to 30 seconds.
 - Friendly hotbar feedback for delivery, Do Not Disturb, rate limits, and
   errors.
 
 Both automated categories are disabled by default and must be enabled
-individually. Damage never targets a friend. The mod sends the self OSC action
-to PuppyClicker, which applies the player's existing integration, Do Not
-Disturb, device, intensity, duration, and safety settings.
+individually. Damage never targets a friend. The mod sends the chosen self OSC
+action to PuppyClicker, which applies the player's existing integration, Do
+Not Disturb, device, and safety settings. `Stop` is not offered as a damage
+action.
 
 ## Compatibility
 
@@ -35,6 +39,11 @@ Disturb, device, intensity, duration, and safety settings.
 | 1.21.1 | Supported | Supported | Supported |
 | 1.21.11 | Supported | Supported | Supported |
 | 26.1.2 | Supported | Supported | Supported |
+
+The 2.1 release line is the final line supporting Forge or Minecraft versions
+older than 1.21.1. Beginning with 3.0.0, new releases will support only Fabric
+and NeoForge on Minecraft 1.21.1 and newer. Existing 2.1 downloads will remain
+available.
 
 Use the JAR labelled with your exact Minecraft version and loader. Fabric also
 requires Fabric API. The mod must be installed on both client and server.
@@ -70,9 +79,10 @@ PuppyClicker for Minecraft makes HTTPS requests to
 is not sent to the server, placed in item data, or intentionally logged. Never
 share the client config file because it stores the key locally in plain text.
 
-The mod does not contact OpenShock directly or choose shock intensity or
-duration. Damage requests contain only the OSC action type and no friend
-identifier, message, or integration override.
+The mod does not contact OpenShock directly. Damage requests contain the chosen
+OSC subtype, intensity, and duration, constrained by the limits returned during
+API-key validation. They contain no friend identifier, message, or integration
+override.
 
 ## Support and project links
 
