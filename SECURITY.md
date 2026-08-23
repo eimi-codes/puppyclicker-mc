@@ -13,8 +13,10 @@ allows the JAR to be selected.
 ## Report a vulnerability privately
 
 Do not open a public GitHub issue for a suspected vulnerability or credential
-exposure. Email [minecraftclicker@eim.ie](mailto:minecraftclicker@eim.ie) with
-the subject **PuppyClicker Minecraft security report**.
+exposure. Use GitHub's
+[private vulnerability reporting form](https://github.com/eimi-codes/puppyclicker-mc/security/advisories/new),
+or email [minecraftclicker@eim.ie](mailto:minecraftclicker@eim.ie) with the
+subject **PuppyClicker Minecraft security report**.
 
 Include as much of the following as is safe:
 
@@ -35,6 +37,12 @@ protecting the account.
 The maintainer will acknowledge reports as soon as practical, investigate them
 privately, and coordinate disclosure when a fix or mitigation is ready. No
 response-time or resolution-time guarantee is offered.
+
+## Automated security checks
+
+GitHub scans the repository with CodeQL, dependency review, Dependabot,
+secret scanning, and push protection. These checks reduce risk but do not
+replace careful review or private reporting of a suspected vulnerability.
 
 ## Appropriate security reports
 
