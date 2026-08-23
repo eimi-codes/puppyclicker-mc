@@ -103,6 +103,11 @@ version. Fabric installations also need Fabric API.
 | 1.21.11 | 21 | 21.11.45–21.11.x | 61.1.13–61.x | 0.19.3+ / 0.141.6+1.21.11 |
 | 26.1.2 | 25 | 26.1.2.95–before 26.2 | 64.0.11–64.x | 0.19.3+ / 0.155.2+26.1.2 |
 
+The 2.1 release line is the final line supporting Forge or Minecraft versions
+older than 1.21.1. Beginning with 3.0.0, new releases will support only Fabric
+and NeoForge on Minecraft 1.21.1 and newer. Existing 2.1 downloads will remain
+available for older installations.
+
 The 1.18.2 and 1.19.2 builds specifically cover the Java 17 generation used by
 popular older packs such as ATM7, ATM8, FTB StoneBlock 3, and FTB One. Packs
 must still use one of the loaders in the table; a Forge JAR cannot load on
@@ -194,10 +199,11 @@ prevents rapid repeat requests.
 
 ## Current scope and planned work
 
-The 2.0.0 feature set adds opt-in outgoing automation and separate NeoForge,
-Forge, and Fabric artifacts while keeping every automation category off by
-default. It does not yet include incoming-click streaming, recent-click
-history, or a finished custom clicker texture.
+The 2.1.0 feature set adds capability-aware OSC action controls and the option
+to limit damage automation to attacks from someone carrying the player's
+bound clicker. Every automation category remains off by default. The mod does
+not yet include incoming-click streaming, recent-click history, or a finished
+custom clicker texture.
 
 - Connect to `GET /stream` with bearer-header SSE authentication.
 - Add accessible incoming-click HUD notifications, sounds, and optional paw

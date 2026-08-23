@@ -16,15 +16,20 @@ damage.
 - Right-click a bound clicker to send its friend a click; sneak-right-click to
   rebind it.
 - Optionally send a self-click after earning a visible advancement.
-- Optionally send a self-targeted OSC shock after taking damage.
+- Optionally send a self-targeted Shock, Vibrate, or Sound action after taking
+  damage, using the limits reported by the player's online devices.
+- Choose whether any damage counts or only an attack from someone carrying a
+  Puppy Clicker bound to the person being damaged.
 - Configure a 15–300 second damage-action cooldown; the default is 30 seconds.
 - Receive clear hotbar feedback for success, Do Not Disturb suppression,
   credentials, rate limits, HTTP failures, and network failures.
 
 Automated actions are **off by default** and each category must be enabled
 separately. Damage actions target only the authenticated player's own
-PuppyClicker devices. The mod does not contact OpenShock directly and does not
-choose device intensity or duration.
+PuppyClicker devices. The mod does not contact OpenShock directly. Action type,
+intensity, and duration are explicitly chosen in the client within the online
+device limits returned during API-key validation; `Stop` is not offered as a
+damage action.
 
 ## Supported versions
 
@@ -39,6 +44,11 @@ version.
 | 1.21.1 | Yes | Yes | Yes |
 | 1.21.11 | Yes | Yes | Yes |
 | 26.1.2 | Yes | Yes | Yes |
+
+The 2.1 release line is the final line supporting Forge or Minecraft versions
+older than 1.21.1. Beginning with 3.0.0, new releases will support only Fabric
+and NeoForge on Minecraft 1.21.1 and newer. Existing 2.1 downloads will remain
+available.
 
 The 1.18.2 and 1.19.2 Forge builds are intended for the generation of popular
 older packs that includes ATM7, ATM8, FTB StoneBlock 3, and FTB One. Fabric
@@ -78,10 +88,11 @@ intentionally logged. The local client config is plain text, so never share or
 upload `puppyclicker-client.toml` or `puppyclicker-client.json`.
 
 Advancement automation uses PuppyClicker's self-click endpoint. Damage
-automation sends only `type: osc` to PuppyClicker's self-action endpoint—no
-friend identifier, message, or integration override. PuppyClicker, Do Not
-Disturb, and the player's device configuration remain responsible for delivery
-and physical safety limits.
+automation sends an OSC subtype, intensity, and duration to PuppyClicker's
+self-action endpoint—no friend identifier, message, or integration override.
+The available values are constrained by the validated online device limits.
+PuppyClicker, Do Not Disturb, and the player's device configuration remain
+responsible for delivery and physical safety limits.
 
 ## Help and links
 
