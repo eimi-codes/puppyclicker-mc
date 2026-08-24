@@ -19,9 +19,9 @@ java {
 dependencies {
     // Minecraft supplies Gson at runtime. Keeping it compile-only avoids bundling a
     // second copy into loader artifacts while leaving the HTTP client loader-neutral.
-    compileOnly 'com.google.code.gson:gson:2.11.0'
+    compileOnly 'com.google.code.gson:gson:2.14.0'
 
-    testImplementation 'com.google.code.gson:gson:2.11.0'
+    testImplementation 'com.google.code.gson:gson:2.14.0'
     testImplementation 'org.junit.jupiter:junit-jupiter:5.11.4'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 }
