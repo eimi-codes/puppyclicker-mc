@@ -9,6 +9,7 @@ java.toolchain.languageVersion = JavaLanguageVersion.of(java_version as int)
 
 sourceSets.main.resources {
     srcDir rootProject.file('platforms/neoforge/common/src/main/resources')
+    srcDir rootProject.file('common/src/main/resources')
     exclude '**/*.bbmodel'
     exclude 'src/generated/**/.cache'
 }
@@ -79,7 +80,7 @@ neoForge.ideSyncTask generateModMetadata
 tasks.named('jar', Jar).configure {
     // Produce one ordinary mod JAR per target. Loader-neutral classes are copied in,
     // so users never need to install a separate common library.
-    from(project(':common').sourceSets.main.output)
+    from(project(':common').sourceSets.main.output.classesDirs)
 }
 
 tasks.named('processResources', ProcessResources).configure {

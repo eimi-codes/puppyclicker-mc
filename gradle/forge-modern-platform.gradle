@@ -15,6 +15,7 @@ sourceSets.main.output.resourcesDir = mainOutputDirectory.get().asFile
 
 sourceSets.main.resources {
     srcDir rootProject.file('platforms/forge/common/src/main/resources')
+    srcDir rootProject.file('common/src/main/resources')
 }
 
 minecraft {
@@ -68,7 +69,7 @@ def generateModMetadata = tasks.register('generateModMetadata', ProcessResources
 sourceSets.main.resources.srcDir generateModMetadata
 
 tasks.named('jar', Jar).configure {
-    from(project(':common').sourceSets.main.output)
+    from(project(':common').sourceSets.main.output.classesDirs)
 }
 
 tasks.named('processResources', ProcessResources).configure {

@@ -7,6 +7,28 @@ and the project uses [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+### Added
+
+- Dedicated 16×16 Puppy Clicker item artwork and model presentation created by
+  Chloe.
+- Translation contribution guidance and automated checks for complete locale
+  key sets, non-blank values, and preserved format arguments.
+- A one-time setup hint when joining a world without a saved API key.
+- A configurable `O` shortcut for opening setup on NeoForge, matching Fabric.
+
+### Changed
+
+- Loader-neutral translations, item models, and textures now have one shared
+  resource source instead of separate Fabric, NeoForge, and Forge copies.
+- The connection screen now identifies the required Public API v2 key, explains
+  where to create it, and uses task-oriented button and status wording.
+
+### Fixed
+
+- Missing-API-key feedback no longer names NeoForge's TOML configuration file
+  when shown on Fabric.
+- The one-second cooldown message no longer uses the awkward “second(s)” form.
+
 ## [2.1.0] - 2026-08-23
 
 ### Added

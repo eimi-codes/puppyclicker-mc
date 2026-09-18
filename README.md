@@ -41,6 +41,7 @@ Repository documents:
 
 - [Support guide](SUPPORT.md)
 - [Contributor guide](CONTRIBUTING.md)
+- [Translation guide](docs/TRANSLATING.md)
 - [Release history](CHANGELOG.md)
 - [Modrinth description](MODRINTH.md)
 - [CurseForge description](CURSEFORGE.md)
@@ -74,6 +75,8 @@ Minecraft click:
   **Mods → PuppyClicker for Minecraft → Config**.
 - Retrieve the account's accepted PuppyClicker friends.
 - Craft multiple Puppy Clicker items and bind each stack to a different friend.
+- Use dedicated Puppy Clicker item art created by
+  [Chloe](https://puppyl.ink/chloe).
 - Send clicks without blocking Minecraft's render thread.
 - Optionally send a self-click to the player's own devices after earning a
   visible advancement.
@@ -115,7 +118,7 @@ Fabric or NeoForge.
 
 All versions also require:
 
-- A PuppyClicker account and personal API key beginning with `pak_`
+- A PuppyClicker account and Public API v2 key beginning with `pak_`
 - The same matching mod JAR installed on both the Minecraft client and server
 
 The JARs are deliberately loader- and version-specific. For example, the Forge
@@ -134,21 +137,24 @@ PuppyClicker API key and does not connect to the PuppyClicker API.
 ## Setup and use
 
 1. Place the mod JAR in the `mods` directory for both the client and server.
-2. On NeoForge or Forge, open **Mods**, select **PuppyClicker for Minecraft**,
-   and choose **Config**. On Fabric, press `O` to open PuppyClicker settings;
-   this binding can be changed under Controls.
-3. Enter the API key in the masked field and choose **Validate & Save**. The mod
+2. On Fabric or NeoForge, press `O` to open **Connect PuppyClicker**. This
+   binding can be changed under Controls. You can also open **Mods**, select
+   **PuppyClicker for Minecraft**, and choose **Config**; this is the setup path
+   for Forge.
+3. In the PuppyClicker app, open **Settings → Integrations & Custom Actions →
+   Public API Keys**. Create a **v2** key and copy it. Do not use a v1 key.
+4. Paste the key into the masked field and choose **Connect & Save**. The mod
    verifies the key through `GET /api/v2/me`, then checks online OSC actions
    and their limits through `GET /api/v2/puppies/self/actions` before saving.
-4. To opt into gameplay-triggered actions, choose **Automated Actions…** and
+5. To opt into gameplay-triggered actions, choose **Automations…** and
    enable **Clicks on advancements**, **OSC actions on damage**, or both. The
    damage controls let you choose whether any damage counts or only an attack
    from someone carrying a clicker bound to you, plus an available action type,
    intensity, and duration. Each category is independent and disabled by
    default.
-5. Press `P` to send a self-click. Change this binding under
+6. Press `P` to send a self-click. Change this binding under
    **Options → Controls → Key Binds → PuppyClicker** if needed.
-6. Craft a Puppy Clicker with a stone button, an iron nugget, and redstone in
+7. Craft a Puppy Clicker with a stone button, an iron nugget, and redstone in
    any arrangement.
 
 | Clicker interaction | Result |
@@ -209,8 +215,8 @@ custom clicker texture.
 - Add accessible incoming-click HUD notifications, sounds, and optional paw
   particles.
 - Add a recent-click history screen.
-- Replace the temporary tripwire-hook item model with dedicated clicker art.
-- Add `en_gb` and `ga_ie` translations.
+- Add reviewed `en_gb`, `ga_ie`, community-requested, and Minecraft novelty
+  translations using the shared language bundle and translation checks.
 
 ## Help and feedback
 

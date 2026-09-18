@@ -31,8 +31,8 @@ need a Java 8 core and transport rather than metadata changes.
 
 | Path | Responsibility |
 | --- | --- |
-| `common/` | Loader-neutral PuppyClicker HTTP client and safety logic |
-| `platforms/<loader>/common/` | Resources and metadata shared by one loader |
+| `common/` | Loader-neutral code, translations, item models, and textures |
+| `platforms/<loader>/common/` | Metadata, mixins, and resources specific to one loader |
 | `platforms/<loader>/<version>/` | Minecraft-version and loader adapter |
 | `gradle/neoforge-platform.gradle` | Shared NeoForge build and packaging convention |
 | `gradle/forge-legacy-platform.gradle` | Forge 1.18.2–1.20.1 build convention |
@@ -56,13 +56,35 @@ server class loading in every adapter.
 3. Start from the nearest adapter, then migrate identifiers, networking,
    screens, item interaction, tooltips, data components or NBT, and gameplay
    events as required by that Minecraft version.
-4. Keep genuinely portable assets under the loader's `common/` resources and
-   put version-specific recipes, item definitions, or mixins in the module.
+4. Keep genuinely portable assets under `common/src/main/resources` and put
+   loader-specific metadata under the loader's `common/` resources. Put
+   version-specific recipes, item definitions, or mixins in the version module.
 5. Add the module to `settings.gradle`, the root build, build workflow, release
    assets, and public compatibility table.
 6. Run the full build, inspect the produced JAR, start a dedicated server, and
    manually verify the client configuration, keybind, clicker item, and enabled
    automation categories.
+
+## Minecraft 26.3 development gate
+
+Minecraft 26.3 development targets Fabric and NeoForge only. Work-in-progress
+adapters may be built and tested before both ecosystems are ready, but 26.3
+must not be added to the publishing matrix or advertised as supported until
+both Fabric and NeoForge have stable, non-beta releases.
+
+The [26.3 release notes](https://feedback.minecraft.net/hc/en-us/articles/48913133328013-Minecraft-Java-Edition-26-3)
+set Data Pack version 121.0 and Resource Pack version 97.1. The port must check
+the clicker recipe, modern item definition, model, texture, language files, and
+stored binding data against those formats.
+
+Minecraft 26.3 also replaces GLFW with SDL and changes key bindings to physical
+keys. The 26.3 adapters must not copy the current direct `GLFW_KEY_*` imports.
+Use the version's Minecraft input APIs, then manually verify the default click
+and settings bindings on more than one keyboard layout. The masked API-key box
+also needs focused testing for text input, paste, IME/accent input, focus loss,
+and narrator output under the new backend. Fabric's
+[26.3 migration notes](https://fabricmc.net/2026/09/15/263.html) provide the
+loader-specific SDL and text-input guidance.
 
 ## Compatibility rules
 

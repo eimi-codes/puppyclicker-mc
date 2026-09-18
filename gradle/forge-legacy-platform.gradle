@@ -9,6 +9,7 @@ java.toolchain.languageVersion = JavaLanguageVersion.of(java_version as int)
 
 sourceSets.main.resources {
     srcDir rootProject.file('platforms/forge/common/src/main/resources')
+    srcDir rootProject.file('common/src/main/resources')
 }
 
 repositories {
@@ -61,7 +62,7 @@ def generateModMetadata = tasks.register('generateModMetadata', ProcessResources
 sourceSets.main.resources.srcDir generateModMetadata
 
 tasks.named('jar', Jar).configure {
-    from(project(':common').sourceSets.main.output)
+    from(project(':common').sourceSets.main.output.classesDirs)
 }
 
 tasks.named('processResources', ProcessResources).configure {

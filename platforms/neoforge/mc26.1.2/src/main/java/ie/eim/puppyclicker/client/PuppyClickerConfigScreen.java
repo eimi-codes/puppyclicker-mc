@@ -35,6 +35,7 @@ public final class PuppyClickerConfigScreen extends Screen {
     private Button visibilityButton;
     private Button validateButton;
     private Button clearButton;
+    private Button getKeyButton;
     private boolean masked = true;
     private boolean validating;
 
@@ -82,27 +83,33 @@ public final class PuppyClickerConfigScreen extends Screen {
         validateButton = this.addRenderableWidget(Button.builder(
                         Component.translatable("screen.puppyclicker.config.validate_save"),
                         button -> validateAndSave())
-                .bounds(this.width / 2 - 100, 126, 200, 20)
+                .bounds(this.width / 2 - 100, 142, 200, 20)
                 .build());
 
-        clearButton = this.addRenderableWidget(Button.builder(
-                        Component.translatable("screen.puppyclicker.config.clear"),
-                        button -> clearSavedKey())
-                .bounds(this.width / 2 - 100, 152, 98, 20)
-                .build());
-
-        this.addRenderableWidget(Button.builder(Component.translatable("gui.done"), button -> onClose())
-                .bounds(this.width / 2 + 2, 152, 98, 20)
+        getKeyButton = this.addRenderableWidget(Button.builder(
+                        Component.translatable("screen.puppyclicker.config.get_key"),
+                        button -> showApiKeyHelp())
+                .bounds(this.width / 2 - 100, 168, 98, 20)
                 .build());
 
         this.addRenderableWidget(Button.builder(
-                        Component.translatable("screen.puppyclicker.config.automations"),
+                        Component.translatable("screen.puppyclicker.config.automations_short"),
                         button -> {
                             if (this.minecraft != null) {
                                 this.minecraft.setScreen(new AutomationConfigScreen(this));
                             }
                         })
-                .bounds(this.width / 2 - 100, 178, 200, 20)
+                .bounds(this.width / 2 + 2, 168, 98, 20)
+                .build());
+
+        clearButton = this.addRenderableWidget(Button.builder(
+                        Component.translatable("screen.puppyclicker.config.clear"),
+                        button -> clearSavedKey())
+                .bounds(this.width / 2 - 100, 194, 98, 20)
+                .build());
+
+        this.addRenderableWidget(Button.builder(Component.translatable("gui.done"), button -> onClose())
+                .bounds(this.width / 2 + 2, 194, 98, 20)
                 .build());
 
         updateValidateButton();
@@ -112,6 +119,11 @@ public final class PuppyClickerConfigScreen extends Screen {
     private void toggleVisibility() {
         masked = !masked;
         visibilityButton.setMessage(visibilityLabel());
+    }
+
+    private void showApiKeyHelp() {
+        status = Component.translatable("screen.puppyclicker.config.status.key_help");
+        narrateStatus();
     }
 
     private Component visibilityLabel() {
@@ -132,6 +144,9 @@ public final class PuppyClickerConfigScreen extends Screen {
         }
         if (clearButton != null) {
             clearButton.active = !validating && !PuppyClickerConfig.apiKey().isBlank();
+        }
+        if (getKeyButton != null) {
+            getKeyButton.active = !validating;
         }
     }
 
@@ -259,7 +274,7 @@ public final class PuppyClickerConfigScreen extends Screen {
                         Component.translatable("screen.puppyclicker.config.privacy")
                                 .withColor(0x808080),
                         contentWidth)
-                .visitLines(TextAlignment.CENTER, this.width / 2, 207, 9, graphics.textRenderer());
+                .visitLines(TextAlignment.CENTER, this.width / 2, 220, 9, graphics.textRenderer());
     }
 
     @Override

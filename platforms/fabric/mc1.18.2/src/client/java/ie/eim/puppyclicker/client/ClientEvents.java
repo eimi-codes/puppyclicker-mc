@@ -1,5 +1,6 @@
 package ie.eim.puppyclicker.client;
 
+import ie.eim.puppyclicker.config.PuppyClickerConfig;
 import org.lwjgl.glfw.GLFW;
 
 import com.mojang.blaze3d.platform.InputConstants;
@@ -8,6 +9,7 @@ import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
+import net.minecraft.network.chat.TranslatableComponent;
 
 /** Registers the manual click and settings key mappings. */
 public final class ClientEvents {
@@ -21,6 +23,7 @@ public final class ClientEvents {
             InputConstants.Type.KEYSYM,
             GLFW.GLFW_KEY_O,
             "key.categories.puppyclicker");
+    private static boolean setupHintShown;
 
     private ClientEvents() {
     }
@@ -32,6 +35,12 @@ public final class ClientEvents {
     }
 
     private static void onClientTick(Minecraft client) {
+        if (!setupHintShown && client.player != null && PuppyClickerConfig.apiKey().isBlank()) {
+            setupHintShown = true;
+            client.player.displayClientMessage(new TranslatableComponent(
+                    "message.puppyclicker.setup_hint",
+                    OPEN_SETTINGS.getTranslatedKeyMessage()), false);
+        }
         while (SEND_SELF_CLICK.consumeClick()) {
             ClientClickService.sendSelfClick();
         }

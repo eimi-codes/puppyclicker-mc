@@ -14,6 +14,21 @@ Java, mod loaders, or the PuppyClicker API to ask for help.
 | A Code of Conduct concern | Email [minecraftclicker@eim.ie](mailto:minecraftclicker@eim.ie) |
 | A PuppyClicker account or service problem unrelated to the mod | Visit [PuppyClicker](https://puppyclicker.app/) |
 
+## Connect your PuppyClicker account
+
+The mod needs a **Public API v2 key** so Minecraft can send clicks through your
+PuppyClicker account. It is not your password.
+
+1. Open the PuppyClicker app.
+2. Go to **Settings → Integrations & Custom Actions → Public API Keys**.
+3. Create a **v2** key and copy it. A valid key begins with `pak_`.
+4. In Minecraft, press `O` on Fabric or NeoForge, paste the key into
+   **Connect PuppyClicker**, and choose **Connect & Save**. On Forge, use
+   **Mods → PuppyClicker for Minecraft → Config** instead.
+
+Keep the key private. If you accidentally share it, revoke or replace it in
+PuppyClicker.
+
 ## Before opening an issue
 
 Please check the following if you can:
@@ -22,8 +37,8 @@ Please check the following if you can:
 - Your loader, its API (for Fabric), and Java match the table in the
   [README requirements](README.md#requirements).
 - The same PuppyClicker mod version is installed on the client and server.
-- The API key begins with `pak_` and validates in
-  **Mods → PuppyClicker for Minecraft → Config**.
+- The key is a Public API **v2** key, begins with `pak_`, and connects
+  successfully in the mod's **Connect PuppyClicker** screen.
 - The problem has not already been reported in
   [open issues](https://github.com/eimi-codes/puppyclicker-mc/issues).
 

@@ -15,6 +15,7 @@ all useful contributions.
 - [Development setup](#development-setup)
 - [Building and verification](#building-and-verification)
 - [Code and documentation](#code-and-documentation)
+- [Translations](#translations)
 - [Publishing a release](#publishing-a-release)
 - [Licence and assets](#licence-and-assets)
 
@@ -118,6 +119,13 @@ credentials or real friend identifiers in examples.
 If behaviour changes, update the README, translations, and relevant metadata
 in the same contribution. New player-facing text must use translation keys
 rather than hard-coded strings.
+
+## Translations
+
+All loaders use the language files under `common/`. See the
+[translation guide](docs/TRANSLATING.md) for locale naming, placeholder rules,
+review expectations, and the focused verification command. Translations are
+welcome from non-programmers as well as code contributors.
 
 ## Publishing a release
 
